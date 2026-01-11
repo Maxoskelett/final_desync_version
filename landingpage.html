@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="de">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>ADHS VR Simulation</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<div class="landing-container">
+		<h1>DeSync – Wenn dein Gehirn 20 Tabs offen hat</h1>
+		<p class="landing-subtitle">
+			Erlebe in VR, wie sich ADHS wirklich anfühlt – mit allen Ablenkungen, die dein Gehirn gleichzeitig bombardieren.
+		</p>
+
+		<!-- Info Section -->
+		<h2 class="info-title">So funktioniert's</h2>
+		<div class="info-section">
+			<div class="info-card">
+				<span class="info-icon">🧠</span>
+				<h3>Was ist das?</h3>
+				<p>Diese VR-Anwendung simuliert realitätsgetreu die Ablenkungen und Reizüberflutung, die Menschen mit ADHS in verschiedenen Alltagsumgebungen erleben. Von visuellen Störungen bis hin zu auditiven Ablenkungen.</p>
+			</div>
+
+			<div class="info-card">
+				<span class="info-icon">🎮</span>
+				<h3>Steuerung</h3>
+				<p><strong>Tastatur:</strong> Taste <kbd>1</kbd> / <kbd>2</kbd> für Intensität +/−, Taste <kbd>3</kbd> zum Ausschalten<br>
+				<strong>Maus:</strong> Klicken & Ziehen zum Umschauen<br>
+				<strong>VR-Brille:</strong> Anschließen und "Start VR" klicken</p>
+			</div>
+
+			<div class="info-card">
+				<span class="info-icon">🥽</span>
+				<h3>Wie nutzen?</h3>
+				<p>Wähle eine Umgebung und starte die Simulation. Du kannst dich mit der <strong>Maus umschauen</strong> oder eine <strong>VR-Brille</strong> (Quest, Vive, etc.) anschließen für eine immersive Erfahrung.</p>
+			</div>
+		</div>
+
+		<!-- Scenarios -->
+		<h2 class="scenarios-title">Wähle eine Umgebung</h2>
+		<div class="scenarios">
+			<button class="scenario-btn" onclick="location.href='hoersaal.html'" aria-label="Hörsaal">
+				<span class="scenario-icon" aria-hidden="true">🎓</span>
+				Hörsaal
+				<span class="scenario-desc">Vorlesung mit Ablenkungen</span>
+			</button>
+			<button class="scenario-btn" onclick="location.href='desk.html'" aria-label="Schreibtisch">
+				<span class="scenario-icon" aria-hidden="true">💻</span>
+				Schreibtisch
+				<span class="scenario-desc">Gaming Room bei Nacht</span>
+			</button>
+			<button class="scenario-btn" onclick="location.href='supermarkt.html'" aria-label="Supermarkt">
+				<span class="scenario-icon" aria-hidden="true">🛒</span>
+				Supermarkt
+				<span class="scenario-desc">Einkaufen mit Reizüberflutung</span>
+			</button>
+		</div>
+
+		<footer class="landing-footer">
+			Projekt DeSync &ndash; Maximilian Wittwer &ndash; Matrikelnummer: 287664
+		</footer>
+	</div>
+
+	<script src="vr.js"></script>
+</body>
+</html>

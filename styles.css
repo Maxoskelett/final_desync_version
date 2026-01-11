@@ -1,0 +1,670 @@
+/* Apple-inspired Neumorphic Design */
+:root {
+	--bg-primary: #e8ecf1;
+	--bg-secondary: #f5f7fa;
+	--text-primary: #1d1d1f;
+	--text-secondary: #86868b;
+	--accent-purple: #a855f7;
+	--accent-blue: #007aff;
+	--shadow-light: rgba(255, 255, 255, 0.8);
+	--shadow-dark: rgba(0, 0, 0, 0.15);
+}
+
+body {
+	margin: 0;
+	min-height: 100vh;
+	background: linear-gradient(135deg, #e8ecf1 0%, #f5f7fa 100%);
+	font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	padding: 2rem 1rem;
+}
+
+.landing-container {
+	max-width: 1200px;
+	width: 100%;
+}
+
+h1 {
+	font-size: 3.5rem;
+	font-weight: 700;
+	color: var(--text-primary);
+	margin-bottom: 1rem;
+	letter-spacing: -0.02em;
+	text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+	text-align: center;
+}
+
+h2.scenarios-title {
+	font-size: 1.8rem;
+	font-weight: 600;
+	color: var(--text-primary);
+	margin: 3rem 0 2rem 0;
+	text-align: center;
+	letter-spacing: -0.01em;
+}
+
+/* Info Section */
+.info-section {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 2rem;
+	margin: 3rem 0;
+	padding: 0 1rem;
+}
+
+.info-card {
+	background: var(--bg-secondary);
+	border-radius: 20px;
+	padding: 2rem;
+	box-shadow: 
+		-6px -6px 12px var(--shadow-light),
+		6px 6px 12px var(--shadow-dark);
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	text-align: center;
+}
+
+.info-card:hover {
+	transform: translateY(-4px);
+	box-shadow: 
+		-8px -8px 16px var(--shadow-light),
+		8px 8px 16px var(--shadow-dark);
+}
+
+.info-icon {
+	font-size: 2.5rem;
+	display: block;
+	margin-bottom: 1rem;
+	filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+}
+
+.info-card h3 {
+	font-size: 1.3rem;
+	font-weight: 600;
+	color: var(--text-primary);
+	margin: 0 0 1rem 0;
+	letter-spacing: -0.01em;
+}
+
+.info-card p {
+	font-size: 0.95rem;
+	line-height: 1.6;
+	color: var(--text-secondary);
+	margin: 0;
+}
+
+.info-card kbd {
+	background: rgba(255, 255, 255, 0.6);
+	padding: 2px 8px;
+	border-radius: 4px;
+	border: 1px solid rgba(0, 0, 0, 0.08);
+	box-shadow: 
+		0 1px 2px rgba(0, 0, 0, 0.08),
+		inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+	font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: var(--text-primary);
+}
+
+.scenarios {
+	display: flex;
+	gap: 2rem;
+	flex-wrap: wrap;
+	justify-content: center;
+	padding: 1rem;
+}
+
+.scenario-btn {
+	background: var(--bg-secondary);
+	border: none;
+	border-radius: 2rem;
+	box-shadow: 
+		-8px -8px 16px var(--shadow-light),
+		8px 8px 16px var(--shadow-dark);
+	padding: 2.5rem 2rem;
+	min-width: 220px;
+	min-height: 200px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	font-size: 1.4rem;
+	font-weight: 600;
+	color: var(--text-primary);
+	outline: none;
+	position: relative;
+	overflow: hidden;
+}
+
+.scenario-btn::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+	opacity: 0;
+	transition: opacity 0.3s;
+	border-radius: 2rem;
+}
+
+.scenario-btn:hover::before {
+	opacity: 1;
+}
+
+.scenario-btn:hover, .scenario-btn:focus {
+	transform: translateY(-6px);
+	box-shadow: 
+		-12px -12px 24px var(--shadow-light),
+		12px 12px 24px var(--shadow-dark),
+		inset 0 0 0 1px rgba(255,255,255,0.3);
+}
+
+.scenario-btn:active {
+	transform: translateY(-2px);
+	box-shadow: 
+		inset -4px -4px 8px var(--shadow-light),
+		inset 4px 4px 8px var(--shadow-dark);
+}
+
+.scenario-icon {
+	font-size: 3.5rem;
+	margin-bottom: 1rem;
+	filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+}
+
+.scenario-desc {
+	font-size: 0.85rem;
+	font-weight: 400;
+	color: var(--text-secondary);
+	margin-top: 0.5rem;
+	display: block;
+}
+
+/* VR Navigation Buttons */
+#back-home, #start-vr, #drive-desk {
+	position: fixed;
+	top: 20px;
+	z-index: 1000;
+	background: rgba(245, 247, 250, 0.7);
+	backdrop-filter: blur(20px);
+	-webkit-backdrop-filter: blur(20px);
+	border: 1px solid rgba(255, 255, 255, 0.4);
+	border-radius: 12px;
+	padding: 10px 20px;
+	font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--text-primary);
+	cursor: pointer;
+	transition: all 0.2s ease;
+	box-shadow: 
+		0 4px 12px rgba(0, 0, 0, 0.1),
+		inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+#back-home {
+	left: 20px;
+}
+
+#start-vr {
+	left: 120px;
+	background: linear-gradient(135deg, #007aff 0%, #0051d5 100%);
+	color: white;
+	border: none;
+	box-shadow: 
+		0 4px 12px rgba(0, 122, 255, 0.3),
+		inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+#start-vr:hover {
+	background: linear-gradient(135deg, #0084ff 0%, #0058e6 100%);
+	transform: translateY(-2px);
+	box-shadow: 
+		0 6px 16px rgba(0, 122, 255, 0.4),
+		inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+#drive-desk {
+	right: 20px;
+}
+
+#back-home:hover, #drive-desk:hover {
+	background: rgba(255, 255, 255, 0.9);
+	transform: translateY(-2px);
+	box-shadow: 
+		0 6px 16px rgba(0, 0, 0, 0.15),
+		inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* ADHS Control Panel - Neumorphic Glassmorphism */
+#adhs-controls {
+	position: fixed;
+	bottom: 30px;
+	right: 30px;
+	background: rgba(245, 247, 250, 0.6);
+	backdrop-filter: blur(30px) saturate(180%);
+	-webkit-backdrop-filter: blur(30px) saturate(180%);
+	color: var(--text-primary);
+	padding: 24px;
+	border-radius: 20px;
+	border: 1px solid rgba(255, 255, 255, 0.5);
+	font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+	font-size: 14px;
+	z-index: 1000;
+	max-width: 340px;
+	box-shadow: 
+		0 8px 32px rgba(0, 0, 0, 0.12),
+		inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+#adhs-controls h3 {
+	margin: 0 0 16px 0;
+	font-size: 18px;
+	font-weight: 600;
+	background: linear-gradient(135deg, var(--accent-purple) 0%, #8b5cf6 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	letter-spacing: -0.01em;
+}
+
+#adhs-controls .intensity-display {
+	margin-bottom: 12px;
+	font-weight: 500;
+}
+
+#adhs-level {
+	padding: 4px 12px;
+	border-radius: 8px;
+	background: rgba(16, 185, 129, 0.1);
+	color: #10b981;
+	font-weight: 600;
+	display: inline-block;
+}
+
+#adhs-controls hr {
+	border: none;
+	height: 1px;
+	background: linear-gradient(90deg, 
+		rgba(255,255,255,0) 0%, 
+		rgba(134, 134, 139, 0.3) 50%, 
+		rgba(255,255,255,0) 100%);
+	margin: 16px 0;
+}
+
+#adhs-controls .keyboard-controls {
+	font-size: 13px;
+	line-height: 1.8;
+	color: var(--text-secondary);
+}
+
+#adhs-controls .keyboard-controls strong {
+	color: var(--text-primary);
+	font-weight: 600;
+}
+
+#adhs-controls kbd {
+	background: rgba(255, 255, 255, 0.6);
+	padding: 4px 10px;
+	border-radius: 6px;
+	margin: 2px;
+	border: 1px solid rgba(0, 0, 0, 0.08);
+	box-shadow: 
+		0 2px 4px rgba(0, 0, 0, 0.08),
+		inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+	font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--text-primary);
+	display: inline-block;
+}
+
+#adhs-controls button {
+	margin-top: 16px;
+	padding: 10px 16px;
+	background: linear-gradient(135deg, #ff453a 0%, #d32f2f 100%);
+	border: none;
+	border-radius: 10px;
+	color: white;
+	cursor: pointer;
+	font-size: 13px;
+	font-weight: 600;
+	width: 100%;
+	transition: all 0.2s ease;
+	box-shadow: 
+		0 4px 12px rgba(255, 69, 58, 0.3),
+		inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+#adhs-controls button:hover {
+	background: linear-gradient(135deg, #ff5449 0%, #dc3f3f 100%);
+	transform: translateY(-2px);
+	box-shadow: 
+		0 6px 16px rgba(255, 69, 58, 0.4),
+		inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+#adhs-controls button:active {
+	transform: translateY(0);
+	box-shadow: 
+		0 2px 8px rgba(255, 69, 58, 0.2),
+		inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Landingpage specific */
+.landing-subtitle {
+	font-size: 1.2rem;
+	font-weight: 400;
+	color: var(--text-secondary);
+	margin-top: -0.5rem;
+	margin-bottom: 3rem;
+	max-width: 560px;
+	text-align: center;
+	line-height: 1.6;
+}
+
+.landing-footer {
+	margin-top: 4rem;
+	color: var(--text-secondary);
+	font-size: 0.95rem;
+	text-align: center;
+	font-weight: 400;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - Mobile First Approach
+   ============================================ */
+
+/* Mobile Geräte (< 768px) */
+@media screen and (max-width: 767px) {
+	body {
+		padding: 1rem 0.5rem;
+	}
+
+	h1 {
+		font-size: 2rem;
+		margin-bottom: 0.75rem;
+	}
+
+	h2.scenarios-title {
+		font-size: 1.4rem;
+		margin: 2rem 0 1.5rem 0;
+	}
+
+	.landing-subtitle {
+		font-size: 1rem;
+		margin-bottom: 2rem;
+		padding: 0 1rem;
+	}
+
+	/* Info Cards - Stack vertikal */
+	.info-section {
+		grid-template-columns: 1fr;
+		gap: 1.5rem;
+		margin: 2rem 0;
+		padding: 0 0.5rem;
+	}
+
+	.info-card {
+		padding: 1.5rem;
+	}
+
+	.info-card h3 {
+		font-size: 1.1rem;
+	}
+
+	.info-card p {
+		font-size: 0.9rem;
+	}
+
+	/* Scenario Buttons - Volle Breite */
+	.scenarios {
+		gap: 1.25rem;
+		padding: 0.5rem;
+	}
+
+	.scenario-btn {
+		min-width: 100%;
+		padding: 2rem 1.5rem;
+		min-height: 140px;
+		font-size: 1.2rem;
+	}
+
+	.scenario-icon {
+		font-size: 2.5rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.scenario-desc {
+		font-size: 0.8rem;
+	}
+
+	/* VR Buttons - Kleinere Abstände */
+	#back-home, #start-vr, #drive-desk {
+		top: 10px;
+		padding: 8px 14px;
+		font-size: 12px;
+		border-radius: 8px;
+	}
+
+	#back-home {
+		left: 10px;
+	}
+
+	#start-vr {
+		left: 90px;
+	}
+
+	#drive-desk {
+		right: 10px;
+	}
+
+	/* ADHS Control Panel - Kompaktere Darstellung */
+	#adhs-controls {
+		bottom: 10px;
+		right: 10px;
+		left: 10px;
+		max-width: none;
+		padding: 16px;
+		font-size: 13px;
+	}
+
+	#adhs-controls h3 {
+		font-size: 16px;
+		margin-bottom: 12px;
+	}
+
+	#adhs-controls .keyboard-controls {
+		font-size: 12px;
+	}
+
+	#adhs-controls kbd {
+		padding: 3px 8px;
+		font-size: 11px;
+	}
+
+	#adhs-controls button {
+		padding: 10px 14px;
+		font-size: 12px;
+	}
+
+	.landing-footer {
+		font-size: 0.85rem;
+		margin-top: 2.5rem;
+		padding: 0 1rem;
+		line-height: 1.5;
+	}
+}
+
+/* Tablets (768px - 1023px) */
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+	h1 {
+		font-size: 2.8rem;
+	}
+
+	h2.scenarios-title {
+		font-size: 1.6rem;
+	}
+
+	.info-section {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1.75rem;
+	}
+
+	.info-card:last-child {
+		grid-column: 1 / -1;
+		max-width: 500px;
+		margin: 0 auto;
+	}
+
+	.scenarios {
+		gap: 1.75rem;
+	}
+
+	.scenario-btn {
+		min-width: 200px;
+		padding: 2.25rem 2rem;
+	}
+
+	#adhs-controls {
+		max-width: 300px;
+		bottom: 20px;
+		right: 20px;
+	}
+}
+
+/* Large Desktop (> 1440px) */
+@media screen and (min-width: 1440px) {
+	.landing-container {
+		max-width: 1400px;
+	}
+
+	h1 {
+		font-size: 4rem;
+	}
+
+	.info-section {
+		gap: 2.5rem;
+		max-width: 1200px;
+		margin: 3rem auto;
+	}
+
+	.scenarios {
+		gap: 3rem;
+	}
+
+	.scenario-btn {
+		min-width: 260px;
+		min-height: 220px;
+		padding: 3.5rem 3rem;
+	}
+}
+
+/* Touch-optimierte Buttons für mobile Geräte */
+@media (hover: none) and (pointer: coarse) {
+	.scenario-btn,
+	#back-home,
+	#start-vr,
+	#drive-desk,
+	#adhs-controls button {
+		min-height: 44px; /* iOS Mindestgröße für Touch-Targets */
+		-webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+	}
+
+	.scenario-btn {
+		min-height: 140px;
+	}
+}
+
+/* Landscape Orientation für Smartphones */
+@media screen and (max-width: 767px) and (orientation: landscape) {
+	h1 {
+		font-size: 1.6rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.landing-subtitle {
+		font-size: 0.9rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.info-section {
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1rem;
+		margin: 1.5rem 0;
+	}
+
+	.info-card {
+		padding: 1rem;
+	}
+
+	.info-card h3 {
+		font-size: 1rem;
+	}
+
+	.info-card p {
+		font-size: 0.85rem;
+	}
+
+	.scenarios {
+		gap: 1rem;
+	}
+
+	.scenario-btn {
+		min-width: auto;
+		flex: 1;
+		min-height: 120px;
+		padding: 1.5rem 1rem;
+	}
+
+	.scenario-icon {
+		font-size: 2rem;
+	}
+}
+
+/* Print Styles */
+@media print {
+	#back-home,
+	#start-vr,
+	#drive-desk,
+	#adhs-controls {
+		display: none;
+	}
+
+	body {
+		background: white;
+	}
+
+	.scenario-btn {
+		box-shadow: none;
+		border: 1px solid #ccc;
+	}
+}
+@media (max-width: 700px) {
+	.scenarios { flex-direction: column; gap: 1.2rem; }
+	.scenario-btn { min-width: 180px; min-height: 120px; font-size: 1.1rem; }
+}
+:root{--bg:#f5f7fb;--card:#ffffff;--accent:#2b7cff;--muted:#666}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:#111;display:flex;align-items:center;justify-content:center;padding:32px}
+.container{max-width:1000px;width:100%;}
+h1{margin:0 0 8px;font-size:2.2rem}
+.lead{margin:0 0 20px;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-bottom:20px}
+.tile{display:block;background:var(--card);padding:20px;border-radius:12px;text-decoration:none;color:inherit;box-shadow:0 6px 18px rgba(16,24,40,0.06);transition:transform .18s ease,box-shadow .18s ease}
+.tile h2{margin:0 0 6px;font-size:1.1rem}
+.tile p{margin:0;color:var(--muted)}
+.tile:hover,.tile:focus{transform:translateY(-6px);box-shadow:0 12px 30px rgba(16,24,40,0.12)}
+footer .small{font-size:0.85rem;color:var(--muted);margin-top:8px}
+
+@media (max-width:520px){body{padding:18px}h1{font-size:1.6rem}.tiles{gap:12px}}
