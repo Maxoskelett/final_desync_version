@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="980" viewBox="0 0 1200 980">
+  <defs>
+    <style>
+      .box { fill: #ffffff; stroke: #0f172a; stroke-width: 2; rx: 14; }
+      .group { fill: #f8fafc; stroke: #334155; stroke-width: 2; rx: 14; }
+      .title { font: 700 18px system-ui, -apple-system, Segoe UI, Roboto, Arial; fill: #0f172a; }
+      .text { font: 14px system-ui, -apple-system, Segoe UI, Roboto, Arial; fill: #0f172a; }
+      .muted { font: 12px system-ui, -apple-system, Segoe UI, Roboto, Arial; fill: #334155; }
+      .arrow { stroke: #0f172a; stroke-width: 2.5; fill: none; }
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#0f172a" />
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="980" fill="#ffffff" />
+
+  <!-- Header -->
+  <text x="36" y="48" class="title">DeSync – Projekt-Flow (Top → Down)</text>
+  <text x="36" y="74" class="muted">Stand: Januar 2026 • A-Frame/WebXR • zentrale Logik: adhs_simulation.js</text>
+
+  <!-- 1) Start -->
+  <rect x="420" y="100" width="360" height="96" class="box" />
+  <text x="440" y="133" class="title">landingpage.html</text>
+  <text x="440" y="158" class="text">Start / Auswahl der Szene</text>
+
+  <!-- Arrow down to scenes -->
+  <line x1="600" y1="196" x2="600" y2="226" class="arrow" marker-end="url(#arrow)" />
+
+  <!-- 2) Scenes (group) -->
+  <rect x="80" y="230" width="1040" height="180" class="group" />
+  <text x="104" y="265" class="title">Szenen (A-Frame / WebXR)</text>
+
+  <rect x="120" y="290" width="300" height="90" class="box" />
+  <text x="140" y="324" class="title">desk.html</text>
+  <text x="140" y="350" class="muted">Gaming/Desk Szene</text>
+
+  <rect x="450" y="290" width="300" height="90" class="box" />
+  <text x="470" y="324" class="title">hoersaal.html</text>
+  <text x="470" y="350" class="muted">Hörsaal Szene</text>
+
+  <rect x="780" y="290" width="300" height="90" class="box" />
+  <text x="800" y="324" class="title">supermarkt.html</text>
+  <text x="800" y="350" class="muted">Supermarkt Szene</text>
+
+  <!-- Arrows from landing to each scene (straight, top-down-ish) -->
+  <line x1="600" y1="226" x2="270" y2="290" class="arrow" marker-end="url(#arrow)" />
+  <line x1="600" y1="226" x2="600" y2="290" class="arrow" marker-end="url(#arrow)" />
+  <line x1="600" y1="226" x2="930" y2="290" class="arrow" marker-end="url(#arrow)" />
+
+  <!-- 3) Runtime -->
+  <line x1="600" y1="410" x2="600" y2="442" class="arrow" marker-end="url(#arrow)" />
+
+  <rect x="220" y="446" width="760" height="96" class="box" />
+  <text x="240" y="479" class="title">A-Frame Szene läuft</text>
+  <text x="240" y="504" class="text">Renderer / Lights / Entities + optional DOM-Overlay</text>
+
+  <!-- 4) Inputs (group) -->
+  <line x1="600" y1="542" x2="600" y2="574" class="arrow" marker-end="url(#arrow)" />
+
+  <rect x="80" y="578" width="1040" height="180" class="group" />
+  <text x="104" y="613" class="title">Eingaben</text>
+
+  <rect x="120" y="638" width="300" height="90" class="box" />
+  <text x="140" y="672" class="title">Tastatur</text>
+  <text x="140" y="698" class="muted">W/E, Q, G, R</text>
+
+  <rect x="450" y="638" width="300" height="90" class="box" />
+  <text x="470" y="672" class="title">UI Buttons</text>
+  <text x="470" y="698" class="muted">DOM-Overlay (Desk/Hörsaal)</text>
+
+  <rect x="780" y="638" width="300" height="90" class="box" />
+  <text x="800" y="672" class="title">ESP32</text>
+  <text x="800" y="698" class="muted">Touch 12/13/14</text>
+
+  <!-- 5) Engine + helpers -->
+  <line x1="600" y1="758" x2="600" y2="790" class="arrow" marker-end="url(#arrow)" />
+
+  <rect x="220" y="794" width="760" height="110" class="box" />
+  <text x="240" y="828" class="title">adhs_simulation.js (Core Engine)</text>
+  <text x="240" y="854" class="text">Level-Logik • Ablenkungen • Audio (Samples) • Input Handling</text>
+  <text x="240" y="878" class="muted">Hilfs-Module: vr.js • Assets/ (Texturen/Sounds) • cc_sdk.min.js</text>
+
+  <!-- 6) Outputs -->
+  <line x1="600" y1="904" x2="600" y2="934" class="arrow" marker-end="url(#arrow)" />
+
+  <rect x="80" y="938" width="1040" height="34" class="group" />
+  <text x="104" y="962" class="title">Outputs: visuelle + auditive Ablenkungen in der Szene</text>
+</svg>

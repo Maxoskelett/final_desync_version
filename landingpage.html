@@ -8,60 +8,149 @@
 </head>
 <body>
 	<div class="landing-container">
-		<h1>DeSync – Wenn dein Gehirn 20 Tabs offen hat</h1>
+		<h1>DeSync – ADHS in VR</h1>
 		<p class="landing-subtitle">
-			Erlebe in VR, wie sich ADHS wirklich anfühlt – mit allen Ablenkungen, die dein Gehirn gleichzeitig bombardieren.
+			Erlebe, wie sich ADHS anfühlt – mit allen Ablenkungen, die gleichzeitig bombardieren.
 		</p>
 
-		<!-- Info Section -->
 		<h2 class="info-title">So funktioniert's</h2>
 		<div class="info-section">
 			<div class="info-card">
 				<span class="info-icon">🧠</span>
 				<h3>Was ist das?</h3>
-				<p>Diese VR-Anwendung simuliert realitätsgetreu die Ablenkungen und Reizüberflutung, die Menschen mit ADHS in verschiedenen Alltagsumgebungen erleben. Von visuellen Störungen bis hin zu auditiven Ablenkungen.</p>
+				<p>VR-Simulation von ADHS in verschiedenen Alltagsumgebungen – visuelle und auditive Ablenkungen.</p>
 			</div>
 
 			<div class="info-card">
 				<span class="info-icon">🎮</span>
 				<h3>Steuerung</h3>
-				<p><strong>Tastatur:</strong> Taste <kbd>1</kbd> / <kbd>2</kbd> für Intensität +/−, Taste <kbd>3</kbd> zum Ausschalten<br>
-				<strong>Maus:</strong> Klicken & Ziehen zum Umschauen<br>
-				<strong>VR-Brille:</strong> Anschließen und "Start VR" klicken</p>
+				<p><strong>Tastatur:</strong> <kbd>1</kbd> / <kbd>2</kbd> für Intensität, <kbd>3</kbd> = Aus<br>
+				<strong>Maus:</strong> Umschauen<br>
+				<strong>VR:</strong> Brille anschließen</p>
 			</div>
 
 			<div class="info-card">
 				<span class="info-icon">🥽</span>
-				<h3>Wie nutzen?</h3>
-				<p>Wähle eine Umgebung und starte die Simulation. Du kannst dich mit der <strong>Maus umschauen</strong> oder eine <strong>VR-Brille</strong> (Quest, Vive, etc.) anschließen für eine immersive Erfahrung.</p>
+				<h3>Nutzen</h3>
+				<p>Wähle eine Umgebung, starte die Simulation und erkunde mit Maus oder VR-Brille.</p>
 			</div>
 		</div>
 
-		<!-- Scenarios -->
-		<h2 class="scenarios-title">Wähle eine Umgebung</h2>
+		<h2 class="info-title">Warum ADHS mehr ist als „schlecht konzentrieren“</h2>
+		<div class="edu-section">
+			<div class="edu-grid">
+				<div class="edu-card">
+					<h3>Starten & Planen</h3>
+					<p>Oft ist nicht das Wissen das Problem, sondern das Anfangen. Aufgaben wirken „zu groß“ und das Gehirn findet keinen Einstieg.</p>
+				</div>
+				<div class="edu-card">
+					<h3>Reizfilter & Overload</h3>
+					<p>Geräusche, Bewegungen, Gedanken und Benachrichtigungen konkurrieren gleichzeitig – das kostet Energie und erhöht Stress.</p>
+				</div>
+				<div class="edu-card">
+					<h3>Wiedereinstieg kostet</h3>
+					<p>Nach jeder Unterbrechung ist man nicht einfach wieder „drin“. Kontext geht verloren, es braucht Zeit, um zurück in die Aufgabe zu kommen.</p>
+				</div>
+				<div class="edu-card">
+					<h3>Zeitblindheit</h3>
+					<p>„Nur kurz…“ wird schnell zu viel Zeit. Das Zeitempfinden kann stark schwanken – mit Folgen für Alltag und Leistungsdruck.</p>
+				</div>
+				<div class="edu-card">
+					<h3>Hyperfokus</h3>
+					<p>Manchmal klappt Fokus extrem gut – aber oft auf das Falsche. Umschalten ist schwer, selbst wenn man es merkt.</p>
+				</div>
+				<div class="edu-card">
+					<h3>Emotionale Belastung</h3>
+					<p>Stress, Frust und Scham sind häufig Begleiter – nicht, weil man „nicht will“, sondern weil Selbststeuerung dauernd Energie kostet.</p>
+				</div>
+			</div>
+			<div class="edu-actions">
+				<button class="edu-btn" id="edu-open" type="button">Mehr zur Simulation</button>
+				<p class="edu-note">Hinweis: Das ist eine vereinfachte Erlebnissimulation – ADHS ist individuell und kann sehr unterschiedlich aussehen.</p>
+			</div>
+		</div>
+
+		<h2 class="scenarios-title">Umgebung wählen</h2>
 		<div class="scenarios">
 			<button class="scenario-btn" onclick="location.href='hoersaal.html'" aria-label="Hörsaal">
 				<span class="scenario-icon" aria-hidden="true">🎓</span>
 				Hörsaal
-				<span class="scenario-desc">Vorlesung mit Ablenkungen</span>
+				<span class="scenario-desc">Vorlesung</span>
 			</button>
 			<button class="scenario-btn" onclick="location.href='desk.html'" aria-label="Schreibtisch">
 				<span class="scenario-icon" aria-hidden="true">💻</span>
 				Schreibtisch
-				<span class="scenario-desc">Gaming Room bei Nacht</span>
+				<span class="scenario-desc">Gaming</span>
 			</button>
 			<button class="scenario-btn" onclick="location.href='supermarkt.html'" aria-label="Supermarkt">
 				<span class="scenario-icon" aria-hidden="true">🛒</span>
 				Supermarkt
-				<span class="scenario-desc">Einkaufen mit Reizüberflutung</span>
+				<span class="scenario-desc">Einkaufen</span>
 			</button>
 		</div>
 
 		<footer class="landing-footer">
-			Projekt DeSync &ndash; Maximilian Wittwer &ndash; Matrikelnummer: 287664
+			DeSync – Maximilian Wittwer – Matrikelnummer: 287664
 		</footer>
 	</div>
 
-	<script src="vr.js"></script>
+	<div class="modal" id="edu-modal" aria-hidden="true">
+		<div class="modal-backdrop" data-close="true"></div>
+		<div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="edu-title">
+			<div class="modal-header">
+				<h2 id="edu-title">Was diese Simulation zeigen soll</h2>
+				<button class="modal-close" type="button" id="edu-close" aria-label="Schließen">×</button>
+			</div>
+			<div class="modal-body">
+				<ul>
+					<li><strong>Reizüberflutung:</strong> Viele gleichzeitige Reize fühlen sich nicht nur „nervig“ an, sondern machen Aufgabensteuerung schwer.</li>
+					<li><strong>Kontextverlust:</strong> Unterbrechungen sind teuer – Zurückfinden ist Arbeit.</li>
+					<li><strong>Stress-Spirale:</strong> Je mehr Unterbrechungen/Overload, desto höher der Stress – und desto schwerer wird Selbststeuerung.</li>
+					<li><strong>Keine Ausrede:</strong> Die Simulation soll Empathie fördern – nicht bewerten.</li>
+				</ul>
+				<p class="modal-footnote">Wenn dich das Thema betrifft oder du Hilfe suchst: Sprich mit Ärzt*innen/Therapeut*innen oder Beratungsstellen. Diese Simulation ersetzt keine Diagnose.</p>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://aframe.io/releases/1.7.1/aframe.min.js" defer></script>
+    <script src="https://aframe.io/releases/1.7.1/aframe-inspector.min.js" defer></script>
+    <script src="cc_sdk.min.js" defer></script>
+    <script src="vr.js" defer></script>
+    <script src="adhs_simulation.js" defer></script>
+	<script>
+		// Educational modal
+		(function () {
+			const modal = document.getElementById('edu-modal');
+			const openBtn = document.getElementById('edu-open');
+			const closeBtn = document.getElementById('edu-close');
+			if (!modal || !openBtn || !closeBtn) return;
+
+			function open() {
+				modal.classList.add('is-open');
+				modal.setAttribute('aria-hidden', 'false');
+				try { document.body.classList.add('modal-open'); } catch (e) {}
+			}
+			function close() {
+				modal.classList.remove('is-open');
+				modal.setAttribute('aria-hidden', 'true');
+				try { document.body.classList.remove('modal-open'); } catch (e) {}
+			}
+
+			openBtn.addEventListener('click', open);
+			closeBtn.addEventListener('click', close);
+			modal.addEventListener('click', (e) => {
+				const t = e.target;
+				if (t && t.getAttribute && t.getAttribute('data-close') === 'true') close();
+			});
+			window.addEventListener('keydown', (e) => {
+				if (!modal.classList.contains('is-open')) return;
+				if (e.key === 'Escape') {
+					e.preventDefault();
+					close();
+				}
+			}, true);
+		})();
+	</script>
 </body>
 </html>

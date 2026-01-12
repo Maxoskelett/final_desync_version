@@ -35,7 +35,7 @@ Einfach nur einkaufen. Sollte easy sein. Ist es nicht:
 
 Das ganze ist gebaut mit:
 - **A-Frame** (WebVR Framework) – damit die 3D-Welten laufen
-- **Web Audio API** – für alle nervigen Sounds (synthetisch generiert, keine Dateien)
+- **Web Audio API** – Sounds werden als Audio-Dateien geladen/decoded (kein Synth-Oszillator-Noise mehr)
 - **Vanilla JavaScript** – weil Frameworks overrated sind
 - **ESP32 Integration** – kannst die Simulation mit Hardware-Buttons steuern (Touch 12, 13, 14)
 
@@ -69,12 +69,22 @@ Und das Wichtigste: **Deine Kamera wird zu den Ablenkungen GEZWUNGEN**. Du wills
 
 ## Steuerung
 
-### Tastatur (zum Testen ohne Hardware)
-- **Taste 1**: Intensität erhöhen (+)
-- **Taste 2**: Intensität verringern (-)
-- **Taste 3**: Simulation ausschalten
-- **Taste H**: Control Panel anzeigen/verstecken
-- **Maus**: Klicken & ziehen zum Umschauen
+### Tastatur (ohne Hardware)
+
+**Global (in allen Szenen über** [adhs_simulation.js](adhs_simulation.js)**):**
+- **W**: Intensität runter
+- **E**: Intensität hoch
+- **Q**: Pause / Fortsetzen
+- **G**: Nachgeben
+- **R**: Refocus
+- **Shift + V**: Debug (VR-HUD ohne Headset)
+
+**Zusätzlich in** [desk.html](desk.html) **und** [hoersaal.html](hoersaal.html) **über das Overlay:**
+- **+ / -**: Intensität hoch / runter
+- **O**: Simulation An/Aus
+
+**Zusätzlich in** [supermarkt.html](supermarkt.html) **(Legacy-Mapping):**
+- **1 / 2 / 3**: Intensität + / Intensität - / Ausschalten
 
 ### ESP32 Hardware (falls du die hast)
 - **Touch Pin 12**: Intensität +
@@ -93,29 +103,25 @@ WebXR läuft am besten in:
 - **Quest Browser** (wenn du eine Quest hast)
 - Braucht HTTPS oder localhost (Live Server macht das automatisch)
 
-## Projekt-Dateien
+## Projektstruktur (Stand: Januar 2026)
 
-```
-desync_cc1-main/
-├── landingpage.html      # Startseite mit Info
-├── hoersaal.html         # Uni-Vorlesung Szenario
-├── desk.html             # Gaming Room Szenario
-├── supermarkt.html       # Einkaufen Szenario
-├── adhs_simulation.js    # Die ganze ADHS-Logik (826 Zeilen Chaos)
-├── vr.js                 # VR Setup & Pointer Lock
-├── styles.css            # Apple-inspired Neumorphic Design
-├── cc_sdk.min.js         # ESP32 SDK (für Hardware-Buttons)
-└── Textures/             # Texturen für die 3D-Welten
-```
+- **Einstieg:** [landingpage.html](landingpage.html)
+- **Szenen:**
+	- [desk.html](desk.html)
+	- [hoersaal.html](hoersaal.html)
+	- [supermarkt.html](supermarkt.html)
+- **Core Logic:** [adhs_simulation.js](adhs_simulation.js)
+- **VR Helper:** [vr.js](vr.js)
+- **Styles:** [styles.css](styles.css)
+- **Assets:** `Assets/` (Texturen & Sounds)
+- **ESP32 (Hardware):** `ESP32_Projekt/`
 
-## Fun Facts
+## Flowchart
 
-- Alle Sounds sind **synthetisch generiert** mit Web Audio API (kein einziges MP3 file!)
-- Die Kamera wird **zwangsweise** zu Ablenkungen gedreht (je höher der Level, desto länger bist du "gefangen")
-- Es gibt **24 verschiedene Sounds** (8 pro Umgebung)
-- Das iPhone-Popup ist ein echtes 3D-Modell mit Notch und Status Bar
-- Die Lichter werden temporär gedimmt während Ablenkungen (für extra Drama)
-- Responsive Design für alle Bildschirmgrößen (weil Extrapunkte)
+### Gezeichnet (SVG)
+
+![Flowchart](flowchart.svg)
+
 
 ## Credits
 
@@ -127,27 +133,4 @@ Gebaut für Creative Coding 1 – weil ADHS endlich mal sichtbar gemacht werden 
 
 **Hinweis**: Das ist keine medizinische Diagnose-App. Nur eine Simulation um Leuten zu zeigen wie überwältigend ADHS sein kann. Wenn du denkst du hast ADHS, geh zum Arzt, nicht zu meiner VR-App 😅
 
-- Läuft er? Vielleicht.
-- Speichert er zuverlässig? Manchmal.
-- Ist er hilfreich? In dem Moment, in dem er funktioniert, ja.
-- Hat er mich verstört und gebrochen? Auch ja.
 
-Es gab Phasen, da war mein Workflow ungefähr so:
-
-1. „Ich ändere nur kurz eine Kleinigkeit.“
-2. Watcher: „Ich habe deine Hoffnung neu geladen.“
-3. Browser: „Cache.“
-4. Ich: „Warum bewegt sich die Kamera jetzt wie ein Geist?“
-
-Am Ende haben wir einen Friedensvertrag geschlossen: **Live Server** macht die Arbeit, und der Watcher darf im Hintergrund leise darüber nachdenken, was er getan hat.
-
-## Tech Stack
-
-- A‑Frame (WebXR)
-- HTML/CSS/JS
-- (Optional) VS Code Live Server
-
-## Credits
-
-- Projekt/Umsetzung: MAximilian Wittwer
-- Texturen: lokal im Ordner `Textures/`

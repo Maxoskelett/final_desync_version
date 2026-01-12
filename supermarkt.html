@@ -6,6 +6,7 @@
   <title>Supermarkt VR</title>
   <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
   <script src="https://aframe.io/releases/1.7.1/aframe-inspector.min.js"></script>
+  <script src="https://unpkg.com/aframe-troika-text/dist/aframe-troika-text.min.js"></script>
   <script src="cc_sdk.min.js"></script>
   <script src="vr.js"></script>
   <script src="adhs_simulation.js"></script>
@@ -13,32 +14,32 @@
 </head>
 
 <body>
-  <a-scene background="color: #e9eef5">
+  <a-scene background="color: #e9eef5" renderer="colorManagement: true; physicallyCorrectLights: true; exposure: 1.10; antialias: true" shadow="type: pcfsoft">
     <a-assets>
-      <img id="floorTex" src="Textures/floor.png" />
-      <img id="wallTex" src="Textures/painted_plaster_wall_disp_4k.png" />
-      <img id="shelfTex" src="Textures/textures.png" />
+      <img id="tex-floor" src="Assets/Textures/textures/floor.png" />
+      <img id="tex-wall-plaster" src="Assets/Textures/textures/painted_plaster_wall_disp_4k.png" />
+      <img id="tex-shelf" src="Assets/Textures/textures/painted_plaster_wall_disp_4k.png" />
     </a-assets>
 
     <a-sky color="#cfe8ff"></a-sky>
 
     <!-- Licht -->
-    <a-entity id="ambient-light" light="type: ambient; intensity: 0.35"></a-entity>
-    <a-entity id="hemisphere-light" light="type: hemisphere; intensity: 0.55; color: #ffffff; groundColor: #bdbdbd"></a-entity>
-    <a-entity id="directional-light" light="type: directional; intensity: 0.65" position="2 7 4" rotation="-40 20 0"></a-entity>
-    <a-entity light="type: point; intensity: 0.35; distance: 18" position="-4 4 0"></a-entity>
-    <a-entity light="type: point; intensity: 0.35; distance: 18" position="4 4 0"></a-entity>
-    <a-entity light="type: point; intensity: 0.35; distance: 18" position="0 4 -4"></a-entity>
-    <a-entity light="type: point; intensity: 0.35; distance: 18" position="0 4 4"></a-entity>
+    <a-entity id="ambient-light" light="type: ambient; intensity: 0.22"></a-entity>
+    <a-entity id="hemisphere-light" light="type: hemisphere; intensity: 0.45; color: #ffffff; groundColor: #c7c7c7"></a-entity>
+    <a-entity id="directional-light" light="type: directional; intensity: 0.75; castShadow: true; shadowMapWidth: 1024; shadowMapHeight: 1024" position="2 7 4" rotation="-40 20 0"></a-entity>
+    <a-entity light="type: point; intensity: 0.40; distance: 18; decay: 2" position="-4 4 0"></a-entity>
+    <a-entity light="type: point; intensity: 0.40; distance: 18; decay: 2" position="4 4 0"></a-entity>
+    <a-entity light="type: point; intensity: 0.38; distance: 18; decay: 2" position="0 4 -4"></a-entity>
+    <a-entity light="type: point; intensity: 0.38; distance: 18; decay: 2" position="0 4 4"></a-entity>
 
     <!-- Raum -->
-    <a-plane id="floorPlane" position="0 0 0" rotation="-90 0 0" width="22" height="16" src="#floorTex" repeat="10 6"></a-plane>
+    <a-plane id="floorPlane" position="0 0 0" rotation="-90 0 0" width="22" height="16" src="#tex-floor" repeat="10 6" shadow="receive:true"></a-plane>
     <a-plane position="0 5 0" rotation="90 0 0" width="22" height="16" color="#ffffff"></a-plane>
 
-    <a-plane position="0 2.5 -8" width="22" height="5" src="#wallTex" repeat="5 2"></a-plane>
-    <a-plane position="0 2.5 8" rotation="0 180 0" width="22" height="5" src="#wallTex" repeat="5 2"></a-plane>
-    <a-plane position="-11 2.5 0" rotation="0 90 0" width="16" height="5" src="#wallTex" repeat="4 2"></a-plane>
-    <a-plane position="11 2.5 0" rotation="0 -90 0" width="16" height="5" src="#wallTex" repeat="4 2"></a-plane>
+    <a-plane position="0 2.5 -8" width="22" height="5" src="#tex-wall-plaster" repeat="5 2"></a-plane>
+    <a-plane position="0 2.5 8" rotation="0 180 0" width="22" height="5" src="#tex-wall-plaster" repeat="5 2"></a-plane>
+    <a-plane position="-11 2.5 0" rotation="0 90 0" width="16" height="5" src="#tex-wall-plaster" repeat="4 2"></a-plane>
+    <a-plane position="11 2.5 0" rotation="0 -90 0" width="16" height="5" src="#tex-wall-plaster" repeat="4 2"></a-plane>
 
     <!-- Fenster / Eingang: an den Wänden am Ende des Gangs -->
     <a-entity id="views">
@@ -167,12 +168,12 @@
     <!-- Eingang / Frontbereich -->
     <a-box position="0 0.05 6.8" width="6" height="0.1" depth="2" material="color:#d9d9d9; metalness:0.15; roughness:0.75"></a-box>
     <a-plane position="0 4.2 7.9" rotation="0 180 0" width="8" height="1.2" material="color:#111827; shader:flat"></a-plane>
-    <a-text value="SUPERMARKT" align="center" color="#ffffff" width="10" position="0 4.2 7.92"></a-text>
+    <a-troika-text value="SUPERMARKT" align="center" color="#ffffff" max-width="10" font-size="0.9" position="0 4.2 7.92"></a-troika-text>
 
     <!-- Logo / Deko am Eingang -->
     <a-entity position="3.5 3.5 7.9" rotation="0 180 0">
       <a-sphere radius="0.4" color="#22c55e"></a-sphere>
-      <a-text value="BIO" align="center" color="#ffffff" width="3" position="0 0 0.42"></a-text>
+      <a-troika-text value="BIO" align="center" color="#ffffff" max-width="1.0" font-size="0.28" position="0 0 0.42"></a-troika-text>
     </a-entity>
 
     <!-- Wanddeko / Schilder -->
@@ -197,8 +198,8 @@
         <a-box position="0 0.08 0" width="3.9" height="0.16" depth="10" material="color:#cbd5e1; metalness:0.15; roughness:0.75"></a-box>
 
         <!-- Rückwände -->
-        <a-box position="-1.78 1.15 0" width="0.06" height="2.3" depth="10" material="src:#shelfTex; repeat:1 6; metalness:0.08; roughness:0.9"></a-box>
-        <a-box position="1.78 1.15 0" width="0.06" height="2.3" depth="10" material="src:#shelfTex; repeat:1 6; metalness:0.08; roughness:0.9"></a-box>
+        <a-box position="-1.78 1.15 0" width="0.06" height="2.3" depth="10" material="src:#tex-shelf; repeat:1 6; metalness:0.08; roughness:0.9"></a-box>
+        <a-box position="1.78 1.15 0" width="0.06" height="2.3" depth="10" material="src:#tex-shelf; repeat:1 6; metalness:0.08; roughness:0.9"></a-box>
 
         <!-- Vertikale Stützen (3 pro Seite) -->
         <a-box position="-1.65 1.15 -4.9" width="0.08" height="2.3" depth="0.14" material="color:#94a3b8; metalness:0.25; roughness:0.6"></a-box>
@@ -222,15 +223,34 @@
         <a-box position="1.35 1.63 0" width="0.9" height="0.06" depth="10" material="color:#e5e7eb; metalness:0.15; roughness:0.65"></a-box>
         <a-box position="1.35 2.08 0" width="0.9" height="0.06" depth="10" material="color:#e5e7eb; metalness:0.15; roughness:0.65"></a-box>
 
-        <a-text value="SNACKS" position="0 2.55 -4.2" rotation="0 180 0" align="center" width="6" color="#111827"></a-text>
+        <!-- Preisleisten (Front-Edge) -->
+        <a-entity id="gang1-price-rails" shadow="cast:false; receive:false">
+          <!-- links (zeigt Richtung +X) -->
+          <a-plane position="-0.89 0.33 0" rotation="0 90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="-0.89 0.78 0" rotation="0 90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="-0.89 1.23 0" rotation="0 90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="-0.89 1.68 0" rotation="0 90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="-0.89 2.13 0" rotation="0 90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+
+          <!-- rechts (zeigt Richtung -X) -->
+          <a-plane position="0.89 0.33 0" rotation="0 -90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="0.89 0.78 0" rotation="0 -90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="0.89 1.23 0" rotation="0 -90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="0.89 1.68 0" rotation="0 -90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="0.89 2.13 0" rotation="0 -90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+        </a-entity>
+
+        <!-- Gang-Schild (VR-lesbar) -->
+        <a-plane position="0 2.52 -4.2" rotation="0 180 0" width="2.8" height="0.55" material="color:#0f172a; shader:flat"></a-plane>
+        <a-troika-text value="SNACKS" align="center" color="#ffffff" max-width="2.6" font-size="0.32" position="0 2.52 -4.19" rotation="0 180 0"></a-troika-text>
       </a-entity>
 
       <!-- Gang 2 (lang) -->
       <a-entity position="3 0 0">
         <a-box position="0 0.08 0" width="3.9" height="0.16" depth="10" material="color:#cbd5e1; metalness:0.15; roughness:0.75"></a-box>
 
-        <a-box position="-1.78 1.15 0" width="0.06" height="2.3" depth="10" material="src:#shelfTex; repeat:1 6; metalness:0.08; roughness:0.9"></a-box>
-        <a-box position="1.78 1.15 0" width="0.06" height="2.3" depth="10" material="src:#shelfTex; repeat:1 6; metalness:0.08; roughness:0.9"></a-box>
+        <a-box position="-1.78 1.15 0" width="0.06" height="2.3" depth="10" material="src:#tex-shelf; repeat:1 6; metalness:0.08; roughness:0.9"></a-box>
+        <a-box position="1.78 1.15 0" width="0.06" height="2.3" depth="10" material="src:#tex-shelf; repeat:1 6; metalness:0.08; roughness:0.9"></a-box>
 
         <a-box position="-1.65 1.15 -4.9" width="0.08" height="2.3" depth="0.14" material="color:#94a3b8; metalness:0.25; roughness:0.6"></a-box>
         <a-box position="-1.65 1.15 0" width="0.08" height="2.3" depth="0.14" material="color:#94a3b8; metalness:0.25; roughness:0.6"></a-box>
@@ -252,15 +272,32 @@
         <a-box position="1.35 1.63 0" width="0.9" height="0.06" depth="10" material="color:#e5e7eb; metalness:0.15; roughness:0.65"></a-box>
         <a-box position="1.35 2.08 0" width="0.9" height="0.06" depth="10" material="color:#e5e7eb; metalness:0.15; roughness:0.65"></a-box>
 
-        <a-text value="GETRÄNKE" position="0 2.55 -4.2" rotation="0 180 0" align="center" width="6" color="#111827"></a-text>
+        <!-- Preisleisten (Front-Edge) -->
+        <a-entity id="gang2-price-rails" shadow="cast:false; receive:false">
+          <a-plane position="-0.89 0.33 0" rotation="0 90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="-0.89 0.78 0" rotation="0 90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="-0.89 1.23 0" rotation="0 90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="-0.89 1.68 0" rotation="0 90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="-0.89 2.13 0" rotation="0 90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+
+          <a-plane position="0.89 0.33 0" rotation="0 -90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="0.89 0.78 0" rotation="0 -90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="0.89 1.23 0" rotation="0 -90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="0.89 1.68 0" rotation="0 -90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="0.89 2.13 0" rotation="0 -90 0" width="10" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+        </a-entity>
+
+        <!-- Gang-Schild (VR-lesbar) -->
+        <a-plane position="0 2.52 -4.2" rotation="0 180 0" width="2.8" height="0.55" material="color:#0f172a; shader:flat"></a-plane>
+        <a-troika-text value="GETRÄNKE" align="center" color="#ffffff" max-width="2.6" font-size="0.32" position="0 2.52 -4.19" rotation="0 180 0"></a-troika-text>
       </a-entity>
 
       <!-- Gang 3 (kurz) -->
       <a-entity position="0 0 -4">
         <a-box position="0 0.08 0" width="3.9" height="0.16" depth="6" material="color:#cbd5e1; metalness:0.15; roughness:0.75"></a-box>
 
-        <a-box position="-1.78 1.15 0" width="0.06" height="2.3" depth="6" material="src:#shelfTex; repeat:1 4; metalness:0.08; roughness:0.9"></a-box>
-        <a-box position="1.78 1.15 0" width="0.06" height="2.3" depth="6" material="src:#shelfTex; repeat:1 4; metalness:0.08; roughness:0.9"></a-box>
+        <a-box position="-1.78 1.15 0" width="0.06" height="2.3" depth="6" material="src:#tex-shelf; repeat:1 4; metalness:0.08; roughness:0.9"></a-box>
+        <a-box position="1.78 1.15 0" width="0.06" height="2.3" depth="6" material="src:#tex-shelf; repeat:1 4; metalness:0.08; roughness:0.9"></a-box>
 
         <a-box position="-1.65 1.15 -2.9" width="0.08" height="2.3" depth="0.14" material="color:#94a3b8; metalness:0.25; roughness:0.6"></a-box>
         <a-box position="-1.65 1.15 0" width="0.08" height="2.3" depth="0.14" material="color:#94a3b8; metalness:0.25; roughness:0.6"></a-box>
@@ -282,7 +319,24 @@
         <a-box position="1.35 1.63 0" width="0.9" height="0.06" depth="6" material="color:#e5e7eb; metalness:0.15; roughness:0.65"></a-box>
         <a-box position="1.35 2.08 0" width="0.9" height="0.06" depth="6" material="color:#e5e7eb; metalness:0.15; roughness:0.65"></a-box>
 
-        <a-text value="OBST" position="0 2.55 -2.3" rotation="0 180 0" align="center" width="6" color="#111827"></a-text>
+        <!-- Preisleisten (Front-Edge) -->
+        <a-entity id="gang3-price-rails" shadow="cast:false; receive:false">
+          <a-plane position="-0.89 0.33 0" rotation="0 90 0" width="6" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="-0.89 0.78 0" rotation="0 90 0" width="6" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="-0.89 1.23 0" rotation="0 90 0" width="6" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="-0.89 1.68 0" rotation="0 90 0" width="6" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="-0.89 2.13 0" rotation="0 90 0" width="6" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+
+          <a-plane position="0.89 0.33 0" rotation="0 -90 0" width="6" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="0.89 0.78 0" rotation="0 -90 0" width="6" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="0.89 1.23 0" rotation="0 -90 0" width="6" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="0.89 1.68 0" rotation="0 -90 0" width="6" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+          <a-plane position="0.89 2.13 0" rotation="0 -90 0" width="6" height="0.10" material="color:#fef3c7; roughness:0.95; metalness:0; opacity:0.95; transparent:true; side:double"></a-plane>
+        </a-entity>
+
+        <!-- Gang-Schild (VR-lesbar) -->
+        <a-plane position="0 2.52 -2.3" rotation="0 180 0" width="2.2" height="0.55" material="color:#0f172a; shader:flat"></a-plane>
+        <a-troika-text value="OBST" align="center" color="#ffffff" max-width="2.0" font-size="0.32" position="0 2.52 -2.29" rotation="0 180 0"></a-troika-text>
       </a-entity>
     </a-entity>
 
@@ -827,6 +881,47 @@
           <a-box position="0 0 1.2" width="0.14" height="0.22" depth="0.08" color="#bbf7d0"></a-box>
           <a-box position="0 0 2.4" width="0.14" height="0.22" depth="0.08" color="#fbcfe8"></a-box>
         </a-entity>
+    </a-entity>
+
+    <!-- Kleine Realismus-Details (VR-freundlich: wenige Primitives) -->
+    <a-entity id="realism-props">
+      <!-- Endcap / Angebotsinsel -->
+      <a-entity id="endcap-display" position="0 0 2.2" shadow="cast:true; receive:true">
+        <a-box position="0 0.08 0" width="1.6" height="0.16" depth="1.0" material="color:#cbd5e1; metalness:0.12; roughness:0.78"></a-box>
+        <a-box position="0 0.70 0" width="1.5" height="1.25" depth="0.9" material="color:#e5e7eb; metalness:0.10; roughness:0.75"></a-box>
+        <a-plane position="0 1.35 0.46" width="1.4" height="0.35" material="color:#111827; shader:flat"></a-plane>
+        <a-troika-text value="ANGEBOTE" position="0 1.35 0.47" align="center" color="#ffffff" font-size="0.20" max-width="1.4"></a-troika-text>
+      </a-entity>
+
+      <!-- Hängeschilder über den Gängen -->
+      <a-entity id="aisle-signs">
+        <a-entity position="-3 3.6 4.9" rotation="0 180 0">
+          <a-plane width="1.6" height="0.45" material="color:#f8fafc; metalness:0.0; roughness:0.9"></a-plane>
+          <a-troika-text value="SNACKS" position="0 0 0.02" align="center" color="#111827" font-size="0.22" max-width="1.5"></a-troika-text>
+        </a-entity>
+        <a-entity position="3 3.6 4.9" rotation="0 180 0">
+          <a-plane width="1.6" height="0.45" material="color:#f8fafc; metalness:0.0; roughness:0.9"></a-plane>
+          <a-troika-text value="GETRÄNKE" position="0 0 0.02" align="center" color="#111827" font-size="0.22" max-width="1.5"></a-troika-text>
+        </a-entity>
+        <a-entity position="0 3.6 -1.2" rotation="0 180 0">
+          <a-plane width="1.9" height="0.45" material="color:#f8fafc; metalness:0.0; roughness:0.9"></a-plane>
+          <a-troika-text value="OBST" position="0 0 0.02" align="center" color="#111827" font-size="0.22" max-width="1.8"></a-troika-text>
+        </a-entity>
+      </a-entity>
+
+      <!-- Kühlregal an der Rückwand -->
+      <a-entity id="fridge-row" position="8 0 -7.2" shadow="cast:true; receive:true">
+        <a-entity position="0 0 0">
+          <a-box position="0 1.2 0" width="1.8" height="2.4" depth="0.75" material="color:#9ca3af; metalness:0.18; roughness:0.55"></a-box>
+          <a-plane position="0 1.2 0.38" width="1.65" height="2.15" material="color:#a7f3d0; transparent:true; opacity:0.18; metalness:0.0; roughness:0.08"></a-plane>
+          <a-plane position="0 2.45 0.38" width="1.65" height="0.25" material="color:#111827; emissive:#111827; emissiveIntensity:0.15"></a-plane>
+          <a-troika-text value="KÜHLUNG" position="0 2.45 0.39" align="center" color="#ffffff" font-size="0.18" max-width="1.6"></a-troika-text>
+        </a-entity>
+        <a-entity position="2.0 0 0">
+          <a-box position="0 1.2 0" width="1.8" height="2.4" depth="0.75" material="color:#9ca3af; metalness:0.18; roughness:0.55"></a-box>
+          <a-plane position="0 1.2 0.38" width="1.65" height="2.15" material="color:#a7f3d0; transparent:true; opacity:0.18; metalness:0.0; roughness:0.08"></a-plane>
+        </a-entity>
+      </a-entity>
     </a-entity>
 
     <!-- Kasse -->

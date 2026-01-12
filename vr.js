@@ -1,79 +1,136 @@
-// VR-Steuerung und Pointer-Lock Setup
+// =============================================================
+// VR / WebXR Hilfsfunktionen
+// - Start-VR Button (enterVR)
+// - Optional: Pointer-Lock für Desktop (wenn look-controls es erlaubt)
+// - Optional: Komfort/Experiment-Komponente "return-to-start"
+// =============================================================
 
+// -------------------------------------------------------------
+// Initialisierung (DOM ready)
+// -------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
-  const sceneEl = document.querySelector('a-scene');
+  const scene = document.querySelector('a-scene');
+  if (!scene) return;
 
-  // VR-Button vorbereiten (falls vorhanden)
-  const startVrButton = document.getElementById('start-vr');
-  if (startVrButton && sceneEl) {
-    startVrButton.addEventListener('click', () => enterVr(sceneEl));
-  }
+  const vrBtn = document.getElementById('start-vr');
+  if (vrBtn) vrBtn.addEventListener('click', () => enterVr(scene));
 
-  // Pointer-Lock aktivieren (damit die Maus "eingefangen" wird beim Klicken)
-  if (sceneEl && sceneWantsPointerLock()) {
-    enablePointerLockOnCanvasClick(sceneEl);
-  }
+  if (hasPointerLock()) enablePointerLock(scene);
 });
 
-// VR-Modus starten (headset aufsetzen und los!)
-function enterVr(sceneEl) {
+// -------------------------------------------------------------
+// Optionales Komfort-/Experiment-Feature:
+// Rig bleibt auf Startposition und hält die Blickrichtung stabil,
+// indem die Kopf-Yaw durch Gegenrotation des Rigs kompensiert wird.
+// Hinweis: Das kann sich in VR unnatürlich anfühlen.
+// -------------------------------------------------------------
+if (typeof AFRAME !== 'undefined' && AFRAME?.registerComponent) {
+  AFRAME.registerComponent('return-to-start', {
+    schema: {
+      enabled: { default: true },
+      lockPosition: { default: true },
+      lockWorldYaw: { default: true },
+      strength: { default: 0.35 }, // 0..1 (1 = sofort)
+      deadzoneDeg: { default: 0.0 }
+    },
+
+    init() {
+      this.startPos = this.el.object3D.position.clone();
+      this.startRot = this.el.object3D.rotation.clone();
+      this.cameraEl = this.el.querySelector('[camera]') || null;
+      this._deadzoneRad = THREE.MathUtils.degToRad(this.data.deadzoneDeg);
+    },
+
+    update() {
+      this._deadzoneRad = THREE.MathUtils.degToRad(this.data.deadzoneDeg);
+    },
+
+    tick() {
+      if (!this.data.enabled) return;
+
+      if (this.data.lockPosition) {
+        this.el.object3D.position.copy(this.startPos);
+      }
+
+      if (!this.data.lockWorldYaw || !this.cameraEl) return;
+
+      // cameraEl.rotation ist lokal unter dem Rig (Head pose / look-controls)
+      const headYaw = wrapRad(this.cameraEl.object3D.rotation.y);
+      if (Math.abs(headYaw) <= this._deadzoneRad) {
+        // sanft zurück zur Start-Yaw
+        this.el.object3D.rotation.y = lerpAngleRad(this.el.object3D.rotation.y, this.startRot.y, this.data.strength);
+        this.el.object3D.rotation.x = this.startRot.x;
+        this.el.object3D.rotation.z = this.startRot.z;
+        return;
+      }
+
+      const targetYaw = wrapRad(this.startRot.y - headYaw);
+      this.el.object3D.rotation.y = lerpAngleRad(this.el.object3D.rotation.y, targetYaw, this.data.strength);
+      this.el.object3D.rotation.x = this.startRot.x;
+      this.el.object3D.rotation.z = this.startRot.z;
+    }
+  });
+
+  function wrapRad(rad) {
+    let r = rad;
+    while (r > Math.PI) r -= Math.PI * 2;
+    while (r < -Math.PI) r += Math.PI * 2;
+    return r;
+  }
+
+  function lerpAngleRad(current, target, alpha) {
+    const c = wrapRad(current);
+    const t = wrapRad(target);
+    let delta = wrapRad(t - c);
+    return wrapRad(c + delta * THREE.MathUtils.clamp(alpha, 0, 1));
+  }
+}
+
+function enterVr(scene) {
+  // Startet WebXR (wenn verfügbar) – bevorzugt über die aktuelle Scene.
   try {
-    // Versuch 1: Direkt über die Scene
-    if (sceneEl && typeof sceneEl.enterVR === 'function') {
-      sceneEl.enterVR();
+    if (scene?.enterVR) {
+      scene.enterVR();
       return;
     }
-
-    // Versuch 2: Über AFRAME global
-    if (typeof AFRAME !== 'undefined' && AFRAME.scenes && AFRAME.scenes[0]) {
+    if (AFRAME?.scenes?.[0]) {
       AFRAME.scenes[0].enterVR();
       return;
     }
   } catch (err) {
-    console.warn('VR Start fehlgeschlagen:', err);
+    console.warn('VR Start failed:', err);
   }
-
-  // Wenn nix funktioniert: User Bescheid geben
-  alert('VR nicht verfügbar (A-Frame/WebXR nicht unterstützt oder nicht geladen).');
+  alert('VR nicht verfügbar.');
 }
 
-// Checkt ob die Kamera Pointer-Lock haben will
-// (steht in HTML bei look-controls="pointerLockEnabled: true")
-function sceneWantsPointerLock() {
-  const lookControlled = document.querySelectorAll('[look-controls]');
-  for (const el of lookControlled) {
+function hasPointerLock() {
+  // Prüft, ob look-controls PointerLock explizit erlaubt.
+  const els = document.querySelectorAll('[look-controls]');
+  for (const el of els) {
     const cfg = el.getAttribute('look-controls');
-    if (!cfg) continue;
-    if (cfg.pointerLockEnabled === true || cfg.pointerLockEnabled === 'true') return true;
+    if (cfg?.includes('pointerLockEnabled: true')) return true;
   }
   return false;
 }
 
-// Macht Pointer-Lock sobald du auf den Canvas klickst
-// (Browser braucht User-Interaktion, sonst blockt er das)
-function enablePointerLockOnCanvasClick(sceneEl) {
+function enablePointerLock(scene) {
+  // Aktiviert PointerLock nur im Desktop-Modus (Click auf Canvas).
   const attach = () => {
-    const canvas = sceneEl.canvas;
-    if (!canvas) return;
-
-    // Bei Klick: Maus "einsperren" für bessere VR-Steuerung
-    canvas.addEventListener('click', () => {
-      try {
-        if (document.pointerLockElement !== canvas && canvas.requestPointerLock) {
-          canvas.requestPointerLock();
+    if (!scene.canvas) return;
+    scene.canvas.addEventListener('click', () => {
+      if (document.pointerLockElement !== scene.canvas && scene.canvas.requestPointerLock) {
+        try {
+          scene.canvas.requestPointerLock();
+        } catch (e) {
+          // PointerLock nicht unterstützt
         }
-      } catch {
-        // Manche Browser mögen kein PointerLock - dann halt nicht
       }
     });
   };
 
-  // Wenn Canvas schon da ist: direkt loslegen
-  if (sceneEl.hasLoaded && sceneEl.canvas) {
+  if (scene.hasLoaded && scene.canvas) {
     attach();
-    return;
+  } else {
+    scene.addEventListener('renderstart', attach, { once: true });
   }
-
-  // Sonst warten bis A-Frame den Canvas erstellt hat
-  sceneEl.addEventListener('renderstart', attach, { once: true });
 }
