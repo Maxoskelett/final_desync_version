@@ -37,7 +37,13 @@ Das ganze ist gebaut mit:
 - **A-Frame** (WebVR Framework) – damit die 3D-Welten laufen
 - **Web Audio API** – Sounds werden als Audio-Dateien geladen/decoded (kein Synth-Oszillator-Noise mehr)
 - **Vanilla JavaScript** – weil Frameworks overrated sind
-- **ESP32 Integration** – kannst die Simulation mit Hardware-Buttons steuern (Touch 12, 13, 14)
+
+Optional:
+- **ESP32 Integration** – Hardware-Buttons steuern die Simulation (Touch 12, 13, 14) über `cc_sdk.min.js` (der Projektordner/Sketch ist nicht mehr im Repo)
+### ESP32 Hardware (optional)
+- **Touch Pin 12**: Intensität +
+- **Touch Pin 13**: Intensität -
+- **Touch Pin 14**: Ausschalten
 
 Die Simulation hat **4 Intensitäts-Level** (0-3):
 - **Level 0**: Aus (endlich Ruhe)
@@ -86,11 +92,6 @@ Und das Wichtigste: **Deine Kamera wird zu den Ablenkungen GEZWUNGEN**. Du wills
 **Zusätzlich in** [supermarkt.html](supermarkt.html) **(Legacy-Mapping):**
 - **1 / 2 / 3**: Intensität + / Intensität - / Ausschalten
 
-### ESP32 Hardware (falls du die hast)
-- **Touch Pin 12**: Intensität +
-- **Touch Pin 13**: Intensität -
-- **Touch Pin 14**: Ausschalten
-
 ### VR-Brille
 - Brille anschließen (Quest, Vive, etc.)
 - "Enter VR" Button klicken
@@ -112,9 +113,8 @@ WebXR läuft am besten in:
 	- [supermarkt.html](supermarkt.html)
 - **Core Logic:** [adhs_simulation.js](adhs_simulation.js)
 - **VR Helper:** [vr.js](vr.js)
-- **Styles:** [styles.css](styles.css)
+- **Styles:** [base.css](base.css), [landing.css](landing.css), [overlay.css](overlay.css)
 - **Assets:** `Assets/` (Texturen & Sounds)
-- **ESP32 (Hardware):** `ESP32_Projekt/`
 
 ## Flowchart
 

@@ -9,8 +9,9 @@
   <script src="https://unpkg.com/aframe-troika-text/dist/aframe-troika-text.min.js"></script>
   <script src="cc_sdk.min.js"></script>
   <script src="vr.js"></script>
-  <script src="adhs_simulation.js"></script>
-  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="sim/bootstrap.js"></script>
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="overlay.css">
 </head>
 
 <body>
@@ -1025,20 +1026,6 @@
   </div>
 
   <script>
-    // Keyboard-Steuerung für ADHS-Simulation
-    window.addEventListener('keydown', (e) => {
-      if (e.key === '1') {
-        handleTouch12();
-        updateLevelDisplay();
-      } else if (e.key === '2') {
-        handleTouch13();
-        updateLevelDisplay();
-      } else if (e.key === '3') {
-        handleTouch14();
-        updateLevelDisplay();
-      }
-    });
-
     function updateLevelDisplay() {
       const levelNames = ['Aus', 'Leicht', 'Mittel', 'Stark'];
       const levelColors = ['#10b981', '#fbbf24', '#f59e0b', '#ef4444'];
