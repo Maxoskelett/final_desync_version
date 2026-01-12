@@ -621,25 +621,28 @@ export class ADHSSimulation {
         levelCard.setAttribute('id', 'vr-hud-level-panel');
         levelCard.setAttribute('position', '0.58 -0.33 0.01');
         levelCard.innerHTML = `
-            <a-plane width="0.688" height="0.408" material="color:${cardShadow}; opacity:0.22; ${commonMat}" position="0.010 -0.010 -0.006"></a-plane>
-            <a-plane width="0.668" height="0.388" material="color:${cardBorder}; opacity:0.62; ${commonMat}" position="0 0 -0.005"></a-plane>
-            <a-plane width="0.66" height="0.38" material="color:${cardBg}; opacity:0.88; ${commonMat}" position="0 0 -0.004"></a-plane>
-            <a-plane width="0.66" height="0.012" material="color:${hudAccent}; opacity:0.92; ${commonMat}" position="0 0.183 0.000"></a-plane>
+            <a-plane width="0.688" height="0.448" material="color:${cardShadow}; opacity:0.22; ${commonMat}" position="0.010 -0.010 -0.006"></a-plane>
+            <a-plane width="0.668" height="0.428" material="color:${cardBorder}; opacity:0.62; ${commonMat}" position="0 0 -0.005"></a-plane>
+            <a-plane width="0.66" height="0.42" material="color:${cardBg}; opacity:0.88; ${commonMat}" position="0 0 -0.004"></a-plane>
+            <a-plane width="0.66" height="0.012" material="color:${hudAccent}; opacity:0.92; ${commonMat}" position="0 0.203 0.000"></a-plane>
 
             <a-troika-text value="ADHS Simulation" max-width="0.62" font-size="0.036" color="${hudText}" position="-0.24 0.10 0.006" align="left" anchor="left" baseline="center"></a-troika-text>
             <a-troika-text value="Intensität" max-width="0.62" font-size="0.032" color="${hudSubText}" position="-0.24 0.062 0.006" align="left" anchor="left" baseline="center" fill-opacity="0.92"></a-troika-text>
 
-            <a-plane id="vr-hud-level-chip" width="0.26" height="0.10" material="color:#e2e8f0; opacity:0.92; ${commonMat}" position="0.14 0.055 0"></a-plane>
+            <!-- "Chip" wie im DOM-Overlay: Shadow + Border + Fill (id bleibt fürs Update) -->
+            <a-plane id="vr-hud-level-chip-shadow" width="0.272" height="0.112" material="color:#000000; opacity:0.16; ${commonMat}" position="0.148 0.047 -0.003"></a-plane>
+            <a-plane id="vr-hud-level-chip-border" width="0.268" height="0.108" material="color:#ffffff; opacity:0.72; ${commonMat}" position="0.145 0.050 -0.002"></a-plane>
+            <a-plane id="vr-hud-level-chip" width="0.26" height="0.10" material="color:#e2e8f0; opacity:0.92; ${commonMat}" position="0.14 0.055 -0.001"></a-plane>
             <a-troika-text id="vr-hud-level-chip-text" value="Aus" max-width="0.24" font-size="0.038" color="#0f172a" position="0.14 0.035 0.006" align="center" anchor="center" baseline="center"></a-troika-text>
 
             <a-troika-text id="vr-hud-focus-text" value="" max-width="0.86" font-size="0.028" color="${hudMuted}" position="-0.24 -0.005 0.006" align="left" anchor="left" baseline="center" fill-opacity="0.92"></a-troika-text>
             <a-troika-text id="vr-hud-active-task-text" value="" max-width="0.86" font-size="0.032" color="${hudText}" position="-0.24 -0.055 0.006" align="left" anchor="left" baseline="center"></a-troika-text>
 
-            <a-plane width="0.52" height="0.030" material="color:#0f172a; opacity:0.10; ${commonMat}" position="-0.01 -0.115 0"></a-plane>
-            <a-plane id="vr-hud-stress-fill" width="0.01" height="0.030" material="color:#10b981; opacity:0.92; ${commonMat}" position="-0.270 -0.115 0.001"></a-plane>
+            <a-plane width="0.52" height="0.030" material="color:#0f172a; opacity:0.10; ${commonMat}" position="-0.01 -0.100 0"></a-plane>
+            <a-plane id="vr-hud-stress-fill" width="0.01" height="0.030" material="color:#10b981; opacity:0.92; ${commonMat}" position="-0.270 -0.100 0.001"></a-plane>
 
-            <a-troika-text id="vr-hud-stress-text" value="Stress: 0%" max-width="0.86" font-size="0.028" color="${hudMuted}" position="-0.24 -0.150 0.006" align="left" anchor="left" baseline="center" fill-opacity="0.92"></a-troika-text>
-            <a-troika-text id="vr-hud-meta-text" value="" max-width="0.86" font-size="0.025" color="${hudMuted}" position="-0.24 -0.185 0.006" align="left" anchor="left" baseline="center" fill-opacity="0.86"></a-troika-text>
+            <a-troika-text id="vr-hud-stress-text" value="Stress: 0%" max-width="0.86" font-size="0.028" color="${hudMuted}" position="-0.24 -0.135 0.006" align="left" anchor="left" baseline="center" fill-opacity="0.92"></a-troika-text>
+            <a-troika-text id="vr-hud-meta-text" value="" max-width="0.86" font-size="0.025" color="${hudMuted}" position="-0.24 -0.168 0.006" align="left" anchor="left" baseline="center" fill-opacity="0.86"></a-troika-text>
         `;
 
         // Top-left: Scene + message
@@ -746,7 +749,7 @@ export class ADHSSimulation {
 
         // Panel sizes (in A-Frame units / meters)
         const todoW = 0.86, todoH = 0.38;
-        const levelW = 0.66, levelH = 0.38;
+        const levelW = 0.66, levelH = 0.42;
         const topW = 0.66, topH = 0.18;
 
         const xLeft = -halfW + margin;
@@ -774,6 +777,31 @@ export class ADHSSimulation {
     updateVrHud() {
         if (!this._vrHud) return;
 
+        const clampHudText = (value, maxChars) => {
+            const s = String(value || '');
+            if (s.length <= maxChars) return s;
+            return s.slice(0, Math.max(0, maxChars - 1)).trimEnd() + '…';
+        };
+
+        const clampHudMultiline = (value, maxLines, maxCharsPerLine) => {
+            const raw = String(value || '').replace(/\r\n/g, '\n');
+            const lines = raw.split('\n');
+            const out = [];
+
+            for (let i = 0; i < lines.length && out.length < maxLines; i++) {
+                const line = lines[i].trimEnd();
+                if (!line) {
+                    out.push('');
+                    continue;
+                }
+                out.push(clampHudText(line, maxCharsPerLine));
+            }
+
+            let joined = out.join('\n');
+            if (lines.length > maxLines) joined = joined.trimEnd() + '…';
+            return joined;
+        };
+
         // Top-left: Environment + short message
         try {
             const envTitle = this._vrHud.querySelector('#vr-hud-env-title');
@@ -798,7 +826,7 @@ export class ADHSSimulation {
             const tb = (Date.now() < (this._timeBlindnessUntil || 0) && this._timeBlindnessMsg) ? this._timeBlindnessMsg : '';
             const am = (Date.now() < (this._actionMsgUntil || 0) && this._actionMsg) ? this._actionMsg : '';
             const gaze = (Date.now() < (this._gazeCueUntil || 0) && this._gazeCueMsg) ? this._gazeCueMsg : '';
-            if (msgText) msgText.setAttribute('value', am || gaze || tb || '');
+            if (msgText) msgText.setAttribute('value', clampHudText((am || gaze || tb || ''), 64));
         } catch (e) {}
 
         // Top-right: ESP32 Status spiegeln (VR = View-only)
@@ -807,7 +835,7 @@ export class ADHSSimulation {
             const espDot = this._vrHud.querySelector('#vr-hud-esp-dot');
             const espPanel = document.getElementById('esp32-panel');
             const raw = espPanel ? (espPanel.textContent || '').trim() : '';
-            if (espText) espText.setAttribute('value', raw ? `${raw}` : 'Status unbekannt');
+            if (espText) espText.setAttribute('value', clampHudText((raw ? `${raw}` : 'Status unbekannt'), 64));
 
             if (espDot) {
                 const s = (raw || '').toLowerCase();
@@ -824,16 +852,25 @@ export class ADHSSimulation {
         if (chipText) chipText.setAttribute('value', `${label}`);
 
         const chip = this._vrHud.querySelector('#vr-hud-level-chip');
+        const chipBorder = this._vrHud.querySelector('#vr-hud-level-chip-border');
         if (chip) {
-            // Farben wie im UI (grün/gelb/rot) – aber weich fürs Apple-Glas
+            // Farben ähnlich wie DOM-Chips (pastellig, aber gut lesbar in VR)
             const chipColors = {
                 Aus: '#e2e8f0',
-                Leicht: '#bbf7d0',
-                Mittel: '#fde68a',
-                Stark: '#fecaca'
+                Leicht: '#86efac',
+                Mittel: '#fde047',
+                Stark: '#fda4af'
             };
             const c = chipColors[label] || '#e2e8f0';
             try { chip.setAttribute('material', 'color', c); } catch (e) {}
+
+            // Border/Typo leicht anpassen je nach Chip-Farbe (mehr Kontrast)
+            try {
+                if (chipBorder) chipBorder.setAttribute('material', 'color', '#ffffff');
+            } catch (e) {}
+            try {
+                if (chipText) chipText.setAttribute('color', '#0f172a');
+            } catch (e) {}
         }
 
         // Fokus/Task-Info rechts
@@ -853,12 +890,12 @@ export class ADHSSimulation {
             const stressPct = Math.round((this.stress || 0) * 100);
             const tb = (Date.now() < (this._timeBlindnessUntil || 0) && this._timeBlindnessMsg) ? ` · ${this._timeBlindnessMsg}` : '';
             const am = (Date.now() < (this._actionMsgUntil || 0) && this._actionMsg) ? ` · ${this._actionMsg}` : '';
-            if (focusText) focusText.setAttribute('value', `Fokus: ${focusLabel} · Stress: ${stressPct}%${tb}${am}`);
+            if (focusText) focusText.setAttribute('value', clampHudText(`Fokus: ${focusLabel} · Stress: ${stressPct}%${tb}${am}`, 84));
 
             const t = this.getActiveTask ? this.getActiveTask() : null;
             const pct = t ? Math.round((t.progress || 0) * 100) : 0;
             const name = t ? (t.text || 'Aufgabe') : 'Aufgabe';
-            if (activeTaskText) activeTaskText.setAttribute('value', `${pct}% · ${name}`);
+            if (activeTaskText) activeTaskText.setAttribute('value', clampHudText(`${pct}% · ${name}`, 54));
         }
 
         try {
@@ -870,7 +907,7 @@ export class ADHSSimulation {
                 const spiralTxt = spiral.toFixed(1);
                 const shieldLeft = Math.max(0, Math.round(Math.max(0, (this._refocusShieldUntil || 0) - now) / 1000));
                 const shield = shieldLeft > 0 ? ` · Shield ${shieldLeft}s` : '';
-                metaText.setAttribute('value', `Streak: ${streak}x · Zeit: ${wastedMin}m · Spirale: ${spiralTxt}×${shield}`);
+                metaText.setAttribute('value', clampHudText(`Streak: ${streak}x · Zeit: ${wastedMin}m · Spirale: ${spiralTxt}×${shield}`, 62));
             }
         } catch (e) {}
 
@@ -884,7 +921,7 @@ export class ADHSSimulation {
             if (fill) {
                 fill.setAttribute('width', w.toFixed(3));
                 const x = (-barW / 2 + w / 2);
-                fill.setAttribute('position', `${x.toFixed(3)} -0.115 0.001`);
+                fill.setAttribute('position', `${x.toFixed(3)} -0.100 0.001`);
                 const c = (stress >= 0.66) ? '#ef4444' : (stress >= 0.33) ? '#f59e0b' : '#10b981';
                 fill.setAttribute('material', 'color', c);
 
@@ -917,7 +954,8 @@ export class ADHSSimulation {
                     const name = t.text || String(t);
                     return `${isActive ? '▶' : '•'} ${pct}% ${name}`;
                 }).join('\n');
-                todoText.setAttribute('value', lines);
+                // Verhindert, dass lange Aufgaben über die Card hinausragen
+                todoText.setAttribute('value', clampHudMultiline(lines, 4, 34));
             }
         }
     }

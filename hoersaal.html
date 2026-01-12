@@ -10,6 +10,7 @@
   <script src="cc_sdk.min.js" defer></script>
   <script src="vr.js" defer></script>
   <script type="module" src="sim/bootstrap.js"></script>
+  <script type="module" src="sim/page-ui.js"></script>
   <link rel="stylesheet" href="base.css">
   <link rel="stylesheet" href="overlay.css">
 </head>
@@ -18,7 +19,7 @@
     <!-- ==============================================
          UI Overlay (DOM-Overlay in WebXR)
          ============================================== -->
-    <button id="back-home" onclick="location.href='landingpage.html'">Zurück</button>
+    <button id="back-home" data-href="landingpage.html">Zurück</button>
     <button id="start-vr">Start VR</button>
 
     <!-- ADHS Simulation Steuerung -->
@@ -265,104 +266,5 @@
 
   </a-scene>
 
-  <script>
-    // Tastatursteuerung immer aktiv, auch in VR
-    window.addEventListener('keydown', (e) => {
-      if (e.key === '+' || e.key === '=') {
-        const btn = document.getElementById('adhs-btn-plus');
-        if (btn) btn.click();
-      } else if (e.key === '-') {
-        const btn = document.getElementById('adhs-btn-minus');
-        if (btn) btn.click();
-      } else if (e.key.toLowerCase() === 'o') {
-        const btn = document.getElementById('adhs-btn-toggle');
-        if (btn) btn.click();
-      }
-    });
-    // Button-Events erst nach DOM-Load
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('adhs-btn-plus').onclick = function() {
-        if (typeof window.adhs !== 'undefined' && window.adhs.distractionLevel < 3) {
-          window.adhs.start(window.adhs.distractionLevel + 1);
-          if (typeof updateLevelDisplay === 'function') setTimeout(() => updateLevelDisplay(), 50);
-        }
-      };
-      document.getElementById('adhs-btn-minus').onclick = function() {
-        if (typeof window.adhs !== 'undefined' && window.adhs.distractionLevel > 0) {
-          window.adhs.start(window.adhs.distractionLevel - 1);
-          if (typeof updateLevelDisplay === 'function') setTimeout(() => updateLevelDisplay(), 50);
-        }
-      };
-      document.getElementById('adhs-btn-toggle').onclick = function() {
-        if (typeof window.adhs !== 'undefined') {
-          if (window.adhs.active && !window.adhs.paused) {
-            window.adhs.paused = true;
-            window.adhs.stop();
-          } else {
-            const level = (window.adhs.distractionLevel && window.adhs.distractionLevel > 0) ? window.adhs.distractionLevel : 1;
-            window.adhs.start(level);
-            window.adhs.paused = false;
-          }
-          if (typeof updateLevelDisplay === 'function') setTimeout(() => updateLevelDisplay(), 50);
-        }
-      };
-
-      // Aktionen (max 5 Buttons insgesamt im Panel)
-      document.getElementById('adhs-btn-givein').onclick = function() {
-        if (window.adhs && typeof window.adhs.handleUserGaveIn === 'function') {
-          window.adhs.handleUserGaveIn({ type: 'manual', label: 'Nachgegeben', severity: 1.0 });
-        }
-      };
-      document.getElementById('adhs-btn-refocus').onclick = function() {
-        if (window.adhs && typeof window.adhs.handleUserRefocus === 'function') {
-          window.adhs.handleUserRefocus();
-        }
-      };
-    });
-
-    function updateLevelDisplay() {
-      const levelNames = ['Aus', 'Leicht', 'Mittel', 'Stark'];
-      const levelColors = ['#10b981', '#fbbf24', '#f59e0b', '#ef4444'];
-      setTimeout(() => {
-        if (typeof window.adhs !== 'undefined') {
-          const levelSpan = document.getElementById('adhs-level');
-          if (!window.adhs.active || window.adhs.paused) {
-            levelSpan.textContent = levelNames[0];
-            levelSpan.style.color = levelColors[0];
-          } else {
-            levelSpan.textContent = levelNames[window.adhs.distractionLevel];
-            levelSpan.style.color = levelColors[window.adhs.distractionLevel];
-          }
-        }
-      }, 100);
-    }
-
-    // Selbstdiagnose: Wenn ES-Module (sim/bootstrap.js) nicht lädt, bleibt window.adhs undefined.
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        if (window.adhs) return;
-        const overlay = document.getElementById('ui-overlay');
-        if (!overlay) return;
-        const msg = document.createElement('div');
-        msg.style.cssText = 'position:fixed; left:12px; right:12px; bottom:12px; z-index:99999; padding:12px 14px; border-radius:10px; background:rgba(239,68,68,.92); color:#fff; font:14px/1.35 system-ui,Segoe UI,Roboto,sans-serif; box-shadow:0 10px 25px rgba(0,0,0,.25)';
-        const errTxt = (window.adhsInitError && (window.adhsInitError.message || String(window.adhsInitError)))
-          ? ('<br><br><strong>Init-Fehler:</strong><br><code style="white-space:pre-wrap">' + (window.adhsInitError.message || String(window.adhsInitError)) + '</code>')
-          : '';
-        msg.innerHTML = 'Simulation wurde nicht initialisiert (window.adhs fehlt).<br><strong>Bitte über einen lokalen Server öffnen</strong> (z.B. VS Code Live Server).<br>Aktuelles Protokoll: <code>' + String(location.protocol) + '</code>' + errTxt;
-        overlay.appendChild(msg);
-        console.error('[ADHS] Bootstrap nicht geladen. Öffne die Seite über http:// statt file://', { protocol: location.protocol, href: location.href });
-      }, 1200);
-    });
-
-    // Zeige Panel wieder mit 'H' Taste (immer sichtbar machen)
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'h' || e.key === 'H') {
-        const panel = document.getElementById('adhs-controls');
-        const showBtn = document.getElementById('adhs-show-menu');
-        panel.style.display = 'block';
-        showBtn.style.display = 'none';
-      }
-    });
-  </script>
 </body>
 </html>
