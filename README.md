@@ -69,9 +69,10 @@ Und das Wichtigste: **Deine Kamera wird zu den Ablenkungen GEZWUNGEN**. Du wills
 4. Fertig, läuft
 
 **Option 2: Einfach Datei öffnen**
-- Doppelklick auf `landingpage.html`
-- Läuft im Browser
-- Für VR brauchst du aber wahrscheinlich Option 1
+
+Wichtig: Die Simulation nutzt ES-Module (z.B. `sim/bootstrap.js`). Öffne die HTML-Dateien deshalb **nicht** per Doppelklick als `file://...`, sonst blockt der Browser die Module und die Steuerung bleibt ohne Funktion.
+
+Empfohlen: In VS Code die Extension **Live Server** nutzen und die gewünschte HTML-Datei über "Open with Live Server" öffnen.
 
 ## Steuerung
 

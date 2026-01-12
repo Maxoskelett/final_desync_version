@@ -12,6 +12,89 @@
 
 export class ADHSSimulation {
 
+    constructor() {
+        // Basis-Zustand
+        this.environment = this.detectEnvironment();
+        this.active = false;
+        this.paused = false;
+        this.distractionLevel = 0;
+
+        // Timers/Intervals
+        this.visualInterval = null;
+        this.audioInterval = null;
+        this.notificationInterval = null;
+        this._taskTickInterval = null;
+
+        // Collections
+        this.visualDistractions = [];
+        this.taskPanel = null;
+
+        // Aufgabe/Status
+        this.tasks = this._buildDefaultTasks(this.environment);
+        this.taskList = (this.tasks || []).map(t => t.text);
+        this.activeTaskIndex = 0;
+        this.taskState = 'idle';
+        this.taskStateUntil = 0;
+
+        // Psychologie/Meta
+        this.stress = 0;
+        this._totalTimeWasted = 0;
+        this._giveInCount = 0;
+        this._giveInSpiralMultiplier = 1.0;
+        this._refocusStreak = 0;
+        this._refocusBoost = 0;
+        this._refocusBoostUntil = 0;
+        this._refocusShieldUntil = 0;
+        this._refocusHardLockUntil = 0;
+        this._hyperfocusUntil = 0;
+        this._reentryUntil = 0;
+        this._timeBlindnessUntil = 0;
+        this._timeBlindnessMsg = '';
+        this._actionMsg = '';
+        this._actionMsgUntil = 0;
+
+        // Habituation
+        this._habituation = new Map();
+
+        // Audio
+        this._audioCtx = null;
+        this.professorAudioContext = null;
+        this.professorGain = null;
+
+        // Default Config pro Level
+        // Frequenzen sind Intervalle (ms): kleiner = häufiger.
+        this.config = {
+            none: { visualFrequency: 999999, audioFrequency: 999999, notificationFrequency: 999999, movementSpeed: 0 },
+            low: { visualFrequency: 5200, audioFrequency: 6400, notificationFrequency: 9000, movementSpeed: 0.35 },
+            medium: { visualFrequency: 3800, audioFrequency: 4600, notificationFrequency: 7200, movementSpeed: 0.55 },
+            high: { visualFrequency: 2600, audioFrequency: 3400, notificationFrequency: 5800, movementSpeed: 0.8 }
+        };
+
+        // UI einmal initial synchronisieren
+        try { this.updateStatusDisplay(); } catch (e) {}
+    }
+
+    _buildDefaultTasks(env) {
+        const byEnv = {
+            desk: [
+                { text: 'Hausarbeit weiterschreiben', kind: 'deepwork', progress: 0 },
+                { text: 'Mails beantworten', kind: 'email', progress: 0 },
+                { text: 'Abgabe planen', kind: 'planning', progress: 0 }
+            ],
+            hoersaal: [
+                { text: 'Mitschreiben: Kernaussagen', kind: 'study', progress: 0 },
+                { text: 'Folie verstehen', kind: 'study', progress: 0 },
+                { text: 'Frage formulieren', kind: 'planning', progress: 0 }
+            ],
+            supermarkt: [
+                { text: 'Einkaufsliste abarbeiten', kind: 'errand', progress: 0 },
+                { text: 'Nichts vergessen', kind: 'planning', progress: 0 },
+                { text: 'Kasse finden', kind: 'errand', progress: 0 }
+            ]
+        };
+        return (byEnv[env] || byEnv.desk).map(t => ({ ...t }));
+    }
+
                 /**
                  * Gedankenblase als visuelle Ablenkung
                  */
@@ -507,24 +590,30 @@ export class ADHSSimulation {
         root.setAttribute('scale', '1 1 1');
 
         const commonMat = 'shader:flat; transparent:true; depthTest:false; depthWrite:false';
-        // NOTE: a-text `color` is not reliably rgba()-parsable in all runtimes.
-        // Use hex colors + material opacity for VR readability.
-        const hudText = '#f8fafc';
-        const hudSubText = '#cbd5e1';
-        const hudAccent = '#ff9f0a';
+
+        // Stil an das normale Overlay angleichen (helles "HUD-Card" Design)
+        // NOTE: a-text/troika `color` ist nicht überall rgba-parsable -> Hex + material opacity.
+        const hudText = '#0f172a';
+        const hudSubText = '#334155';
+        const hudMuted = '#475569';
+        const hudAccent = '#ff453a';
+        const cardBg = '#f8fafc';
+        const cardBorder = '#ffffff';
+        const cardShadow = '#000000';
 
         // Bottom-left: To-Do
         const todoCard = document.createElement('a-entity');
         todoCard.setAttribute('id', 'vr-hud-todo-panel');
         todoCard.setAttribute('position', '-0.58 -0.33 0.01');
         todoCard.innerHTML = `
-            <a-plane width="0.88" height="0.40" material="color:#000000; opacity:0.28; ${commonMat}" position="0.012 -0.012 -0.006"></a-plane>
-            <a-plane width="0.86" height="0.38" material="color:#111827; opacity:0.94; ${commonMat}" position="0 0 -0.004"></a-plane>
-            <a-plane width="0.86" height="0.014" material="color:${hudAccent}; opacity:0.98; ${commonMat}" position="0 0.183 0.000"></a-plane>
-            <a-plane width="0.82" height="0.34" material="color:#111827; opacity:0.62; ${commonMat}" position="0 0 -0.003"></a-plane>
+            <!-- Shadow + border + main card (light UI like DOM overlay) -->
+            <a-plane width="0.888" height="0.408" material="color:${cardShadow}; opacity:0.22; ${commonMat}" position="0.010 -0.010 -0.006"></a-plane>
+            <a-plane width="0.868" height="0.388" material="color:${cardBorder}; opacity:0.62; ${commonMat}" position="0 0 -0.005"></a-plane>
+            <a-plane width="0.86" height="0.38" material="color:${cardBg}; opacity:0.88; ${commonMat}" position="0 0 -0.004"></a-plane>
+            <a-plane width="0.86" height="0.012" material="color:${hudAccent}; opacity:0.92; ${commonMat}" position="0 0.183 0.000"></a-plane>
 
-            <a-troika-text value="To-Do" max-width="0.80" font-size="0.040" color="${hudText}" position="-0.34 0.10 0.006" align="left" anchor="left" baseline="center"></a-troika-text>
-            <a-troika-text id="vr-hud-todo-text" value="" max-width="0.82" font-size="0.032" color="${hudSubText}" position="-0.37 0.05 0.006" align="left" anchor="left" baseline="top" line-height="1.16" fill-opacity="0.85"></a-troika-text>
+            <a-troika-text value="To-Do-Liste" max-width="0.80" font-size="0.040" color="${hudText}" position="-0.34 0.10 0.006" align="left" anchor="left" baseline="center"></a-troika-text>
+            <a-troika-text id="vr-hud-todo-text" value="" max-width="0.82" font-size="0.032" color="${hudMuted}" position="-0.37 0.05 0.006" align="left" anchor="left" baseline="top" line-height="1.16" fill-opacity="0.92"></a-troika-text>
         `;
 
         // Bottom-right: Focus / Level / Stress
@@ -532,28 +621,25 @@ export class ADHSSimulation {
         levelCard.setAttribute('id', 'vr-hud-level-panel');
         levelCard.setAttribute('position', '0.58 -0.33 0.01');
         levelCard.innerHTML = `
-            <a-plane width="0.68" height="0.40" material="color:#000000; opacity:0.28; ${commonMat}" position="0.012 -0.012 -0.006"></a-plane>
-            <a-plane width="0.66" height="0.38" material="color:#111827; opacity:0.94; ${commonMat}" position="0 0 -0.004"></a-plane>
-            <a-plane width="0.66" height="0.014" material="color:${hudAccent}; opacity:0.98; ${commonMat}" position="0 0.183 0.000"></a-plane>
-            <a-plane width="0.62" height="0.34" material="color:#111827; opacity:0.62; ${commonMat}" position="0 0 -0.003"></a-plane>
+            <a-plane width="0.688" height="0.408" material="color:${cardShadow}; opacity:0.22; ${commonMat}" position="0.010 -0.010 -0.006"></a-plane>
+            <a-plane width="0.668" height="0.388" material="color:${cardBorder}; opacity:0.62; ${commonMat}" position="0 0 -0.005"></a-plane>
+            <a-plane width="0.66" height="0.38" material="color:${cardBg}; opacity:0.88; ${commonMat}" position="0 0 -0.004"></a-plane>
+            <a-plane width="0.66" height="0.012" material="color:${hudAccent}; opacity:0.92; ${commonMat}" position="0 0.183 0.000"></a-plane>
 
-            <a-troika-text value="ADHS" max-width="0.60" font-size="0.034" color="#c4b5fd" position="-0.24 0.10 0.006" align="left" anchor="left" baseline="center" fill-opacity="0.85"></a-troika-text>
-            <a-troika-text value="Intensität" max-width="0.60" font-size="0.038" color="${hudText}" position="-0.24 0.05 0.006" align="left" anchor="left" baseline="center"></a-troika-text>
+            <a-troika-text value="ADHS Simulation" max-width="0.62" font-size="0.036" color="${hudText}" position="-0.24 0.10 0.006" align="left" anchor="left" baseline="center"></a-troika-text>
+            <a-troika-text value="Intensität" max-width="0.62" font-size="0.032" color="${hudSubText}" position="-0.24 0.062 0.006" align="left" anchor="left" baseline="center" fill-opacity="0.92"></a-troika-text>
 
-            <a-plane id="vr-hud-level-chip" width="0.26" height="0.10" material="color:#e2e8f0; opacity:0.80; ${commonMat}" position="0.14 0.05 0"></a-plane>
+            <a-plane id="vr-hud-level-chip" width="0.26" height="0.10" material="color:#e2e8f0; opacity:0.92; ${commonMat}" position="0.14 0.055 0"></a-plane>
+            <a-troika-text id="vr-hud-level-chip-text" value="Aus" max-width="0.24" font-size="0.038" color="#0f172a" position="0.14 0.035 0.006" align="center" anchor="center" baseline="center"></a-troika-text>
 
-            <a-troika-text id="vr-hud-level-chip-text" value="Aus" max-width="0.24" font-size="0.038" color="#0f172a" position="0.14 0.03 0.006" align="center" anchor="center" baseline="center"></a-troika-text>
+            <a-troika-text id="vr-hud-focus-text" value="" max-width="0.86" font-size="0.028" color="${hudMuted}" position="-0.24 -0.005 0.006" align="left" anchor="left" baseline="center" fill-opacity="0.92"></a-troika-text>
+            <a-troika-text id="vr-hud-active-task-text" value="" max-width="0.86" font-size="0.032" color="${hudText}" position="-0.24 -0.055 0.006" align="left" anchor="left" baseline="center"></a-troika-text>
 
+            <a-plane width="0.52" height="0.030" material="color:#0f172a; opacity:0.10; ${commonMat}" position="-0.01 -0.115 0"></a-plane>
+            <a-plane id="vr-hud-stress-fill" width="0.01" height="0.030" material="color:#10b981; opacity:0.92; ${commonMat}" position="-0.270 -0.115 0.001"></a-plane>
 
-            <a-troika-text id="vr-hud-focus-text" value="" max-width="0.86" font-size="0.030" color="${hudSubText}" position="-0.24 -0.01 0.006" align="left" anchor="left" baseline="center" fill-opacity="0.85"></a-troika-text>
-            <a-troika-text id="vr-hud-active-task-text" value="" max-width="0.86" font-size="0.034" color="${hudText}" position="-0.24 -0.06 0.006" align="left" anchor="left" baseline="center"></a-troika-text>
-
-            <a-plane width="0.52" height="0.030" material="color:#f8fafc; opacity:0.22; ${commonMat}" position="-0.01 -0.115 0"></a-plane>
-            <a-plane id="vr-hud-stress-fill" width="0.01" height="0.030" material="color:#10b981; opacity:0.90; ${commonMat}" position="-0.270 -0.115 0.001"></a-plane>
-
-            <a-troika-text id="vr-hud-stress-text" value="Stress: 0%" max-width="0.86" font-size="0.030" color="${hudSubText}" position="-0.24 -0.150 0.006" align="left" anchor="left" baseline="center" fill-opacity="0.85"></a-troika-text>
-
-            <a-troika-text id="vr-hud-meta-text" value="" max-width="0.86" font-size="0.026" color="${hudSubText}" position="-0.24 -0.185 0.006" align="left" anchor="left" baseline="center" fill-opacity="0.80"></a-troika-text>
+            <a-troika-text id="vr-hud-stress-text" value="Stress: 0%" max-width="0.86" font-size="0.028" color="${hudMuted}" position="-0.24 -0.150 0.006" align="left" anchor="left" baseline="center" fill-opacity="0.92"></a-troika-text>
+            <a-troika-text id="vr-hud-meta-text" value="" max-width="0.86" font-size="0.025" color="${hudMuted}" position="-0.24 -0.185 0.006" align="left" anchor="left" baseline="center" fill-opacity="0.86"></a-troika-text>
         `;
 
         // Top-left: Scene + message
@@ -561,18 +647,14 @@ export class ADHSSimulation {
         envCard.setAttribute('id', 'vr-hud-env-panel');
         envCard.setAttribute('position', '-0.58 0.34 0.01');
         envCard.innerHTML = `
-            <a-plane width="0.68" height="0.20" material="color:#000000; opacity:0.28; ${commonMat}" position="0.012 -0.012 -0.006"></a-plane>
-            <a-plane width="0.66" height="0.18" material="color:#111827; opacity:0.94; ${commonMat}" position="0 0 -0.004"></a-plane>
-            <a-plane width="0.66" height="0.014" material="color:${hudAccent}; opacity:0.98; ${commonMat}" position="0 0.083 0.000"></a-plane>
-            <a-plane width="0.62" height="0.14" material="color:#111827; opacity:0.62; ${commonMat}" position="0 0 -0.003"></a-plane>
+            <a-plane width="0.688" height="0.208" material="color:${cardShadow}; opacity:0.22; ${commonMat}" position="0.010 -0.010 -0.006"></a-plane>
+            <a-plane width="0.668" height="0.188" material="color:${cardBorder}; opacity:0.62; ${commonMat}" position="0 0 -0.005"></a-plane>
+            <a-plane width="0.66" height="0.18" material="color:${cardBg}; opacity:0.88; ${commonMat}" position="0 0 -0.004"></a-plane>
+            <a-plane width="0.66" height="0.012" material="color:${hudAccent}; opacity:0.92; ${commonMat}" position="0 0.083 0.000"></a-plane>
 
-            <!-- Icon row (Quest-style): env dot + simple location glyph -->
-            <a-circle id="vr-hud-env-dot" radius="0.016" segments="18" material="color:#64748b; opacity:0.95; ${commonMat}" position="-0.29 0.040 0"></a-circle>
-            <a-plane width="0.030" height="0.030" material="color:${hudText}; opacity:0.90; ${commonMat}" position="-0.245 0.040 0"></a-plane>
-            <a-plane width="0.014" height="0.014" material="color:#111827; opacity:0.80; ${commonMat}" position="-0.245 0.040 0.001"></a-plane>
-
-            <a-troika-text id="vr-hud-env-title" value="" max-width="0.86" font-size="0.036" color="${hudText}" position="-0.20 0.050 0.006" align="left" anchor="left" baseline="center"></a-troika-text>
-            <a-troika-text id="vr-hud-msg-text" value="" max-width="0.86" font-size="0.030" color="${hudSubText}" position="-0.20 0.010 0.006" align="left" anchor="left" baseline="center" fill-opacity="0.85"></a-troika-text>
+            <a-circle id="vr-hud-env-dot" radius="0.016" segments="18" material="color:#94a3b8; opacity:0.95; ${commonMat}" position="-0.29 0.040 0"></a-circle>
+            <a-troika-text id="vr-hud-env-title" value="" max-width="0.86" font-size="0.036" color="${hudText}" position="-0.26 0.050 0.006" align="left" anchor="left" baseline="center"></a-troika-text>
+            <a-troika-text id="vr-hud-msg-text" value="" max-width="0.86" font-size="0.030" color="${hudMuted}" position="-0.26 0.010 0.006" align="left" anchor="left" baseline="center" fill-opacity="0.92"></a-troika-text>
         `;
 
         // Top-right: ESP32 status
@@ -580,17 +662,14 @@ export class ADHSSimulation {
         espCard.setAttribute('id', 'vr-hud-esp-panel');
         espCard.setAttribute('position', '0.58 0.34 0.01');
         espCard.innerHTML = `
-            <a-plane width="0.68" height="0.20" material="color:#000000; opacity:0.28; ${commonMat}" position="0.012 -0.012 -0.006"></a-plane>
-            <a-plane width="0.66" height="0.18" material="color:#111827; opacity:0.94; ${commonMat}" position="0 0 -0.004"></a-plane>
-            <a-plane width="0.66" height="0.014" material="color:${hudAccent}; opacity:0.98; ${commonMat}" position="0 0.083 0.000"></a-plane>
-            <a-plane width="0.62" height="0.14" material="color:#111827; opacity:0.62; ${commonMat}" position="0 0 -0.003"></a-plane>
+            <a-plane width="0.688" height="0.208" material="color:${cardShadow}; opacity:0.22; ${commonMat}" position="0.010 -0.010 -0.006"></a-plane>
+            <a-plane width="0.668" height="0.188" material="color:${cardBorder}; opacity:0.62; ${commonMat}" position="0 0 -0.005"></a-plane>
+            <a-plane width="0.66" height="0.18" material="color:${cardBg}; opacity:0.88; ${commonMat}" position="0 0 -0.004"></a-plane>
+            <a-plane width="0.66" height="0.012" material="color:${hudAccent}; opacity:0.92; ${commonMat}" position="0 0.083 0.000"></a-plane>
 
-            <!-- Icon row (Quest-style): status dot + simple device glyph -->
-            <a-circle id="vr-hud-esp-dot" radius="0.016" segments="18" material="color:#64748b; opacity:0.95; ${commonMat}" position="-0.29 0.040 0"></a-circle>
-            <a-plane width="0.038" height="0.030" material="color:${hudText}; opacity:0.90; ${commonMat}" position="-0.245 0.040 0"></a-plane>
-            <a-plane width="0.018" height="0.010" material="color:${hudText}; opacity:0.90; ${commonMat}" position="-0.245 0.023 0"></a-plane>
-
-            <a-troika-text id="vr-hud-esp-text" value="—" max-width="0.86" font-size="0.032" color="${hudSubText}" position="-0.20 0.032 0.006" align="left" anchor="left" baseline="center" fill-opacity="0.85"></a-troika-text>
+            <a-circle id="vr-hud-esp-dot" radius="0.016" segments="18" material="color:#94a3b8; opacity:0.95; ${commonMat}" position="-0.29 0.040 0"></a-circle>
+            <a-troika-text value="ESP32" max-width="0.86" font-size="0.030" color="${hudSubText}" position="-0.26 0.050 0.006" align="left" anchor="left" baseline="center" fill-opacity="0.92"></a-troika-text>
+            <a-troika-text id="vr-hud-esp-text" value="—" max-width="0.86" font-size="0.030" color="${hudMuted}" position="-0.26 0.010 0.006" align="left" anchor="left" baseline="center" fill-opacity="0.92"></a-troika-text>
         `;
 
         root.appendChild(todoCard);
@@ -993,10 +1072,22 @@ export class ADHSSimulation {
 
     // Simulation starten
     start(level = 0) {
+        const clampedLevel = Math.max(0, Math.min(3, Number(level) || 0));
+
+        // Immer erst sauber aufräumen
         this.stop();
+
+        // Level 0 bedeutet: Aus (kein "active" Zustand ohne Effekte)
+        if (clampedLevel === 0) {
+            this.distractionLevel = 0;
+            this.updateStatusDisplay();
+            this.updateVrHud();
+            return;
+        }
+
         this.active = true;
         this.paused = false;
-        this.distractionLevel = level;
+        this.distractionLevel = clampedLevel;
 
         // VR HUD Listener einmalig installieren
         this.installVrHudOnce();
@@ -1004,13 +1095,13 @@ export class ADHSSimulation {
         // Audio nach User-Gesture entsperren (Start() wird per Button/Klick ausgelöst)
         this.unlockAudio();
 
-        const levelName = ['none', 'low', 'medium', 'high'][level];
+        const levelName = ['none', 'low', 'medium', 'high'][clampedLevel];
         const baseConfig = this.config[levelName];
         // Nicht mutieren (config wird unten ggf. desk-spezifisch angepasst)
         let config = { ...baseConfig };
 
         // Option B: Umgebung bleibt charakteristisch, aber Intensität (1/2/3) soll überall ähnlich deutlich wirken.
-        if (level > 0) {
+        if (clampedLevel > 0) {
             const env = this.environment;
             const multByEnv = {
                 // Desk: etwas mehr "kleines Chaos" bei Mittel/Stark (ohne aggressive Kopfbewegung)
@@ -1044,19 +1135,19 @@ export class ADHSSimulation {
 
             const t = multByEnv[env] || multByEnv.desk;
             if (typeof config.visualFrequency === 'number') {
-                config.visualFrequency = Math.max(t.minVisual, Math.round(config.visualFrequency * (t.visual[level] || 1.0)));
+                config.visualFrequency = Math.max(t.minVisual, Math.round(config.visualFrequency * (t.visual[clampedLevel] || 1.0)));
             }
             if (typeof config.audioFrequency === 'number') {
-                config.audioFrequency = Math.max(t.minAudio, Math.round(config.audioFrequency * (t.audio[level] || 1.0)));
+                config.audioFrequency = Math.max(t.minAudio, Math.round(config.audioFrequency * (t.audio[clampedLevel] || 1.0)));
             }
             if (typeof config.notificationFrequency === 'number') {
-                config.notificationFrequency = Math.max(t.minNotif, Math.round(config.notificationFrequency * (t.notif[level] || 1.0)));
+                config.notificationFrequency = Math.max(t.minNotif, Math.round(config.notificationFrequency * (t.notif[clampedLevel] || 1.0)));
             }
         }
         
         console.log(`🎮 ADHS Simulation läuft - Level: ${levelName}`);
         
-        if (level > 0) {
+        if (clampedLevel > 0) {
             // Aufgabenpanel anzeigen
             this.showTaskPanel();
 

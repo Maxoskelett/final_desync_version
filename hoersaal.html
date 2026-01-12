@@ -299,7 +299,8 @@
             window.adhs.paused = true;
             window.adhs.stop();
           } else {
-            window.adhs.start(window.adhs.distractionLevel);
+            const level = (window.adhs.distractionLevel && window.adhs.distractionLevel > 0) ? window.adhs.distractionLevel : 1;
+            window.adhs.start(level);
             window.adhs.paused = false;
           }
           if (typeof updateLevelDisplay === 'function') setTimeout(() => updateLevelDisplay(), 50);
@@ -335,6 +336,23 @@
         }
       }, 100);
     }
+
+    // Selbstdiagnose: Wenn ES-Module (sim/bootstrap.js) nicht lädt, bleibt window.adhs undefined.
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        if (window.adhs) return;
+        const overlay = document.getElementById('ui-overlay');
+        if (!overlay) return;
+        const msg = document.createElement('div');
+        msg.style.cssText = 'position:fixed; left:12px; right:12px; bottom:12px; z-index:99999; padding:12px 14px; border-radius:10px; background:rgba(239,68,68,.92); color:#fff; font:14px/1.35 system-ui,Segoe UI,Roboto,sans-serif; box-shadow:0 10px 25px rgba(0,0,0,.25)';
+        const errTxt = (window.adhsInitError && (window.adhsInitError.message || String(window.adhsInitError)))
+          ? ('<br><br><strong>Init-Fehler:</strong><br><code style="white-space:pre-wrap">' + (window.adhsInitError.message || String(window.adhsInitError)) + '</code>')
+          : '';
+        msg.innerHTML = 'Simulation wurde nicht initialisiert (window.adhs fehlt).<br><strong>Bitte über einen lokalen Server öffnen</strong> (z.B. VS Code Live Server).<br>Aktuelles Protokoll: <code>' + String(location.protocol) + '</code>' + errTxt;
+        overlay.appendChild(msg);
+        console.error('[ADHS] Bootstrap nicht geladen. Öffne die Seite über http:// statt file://', { protocol: location.protocol, href: location.href });
+      }, 1200);
+    });
 
     // Zeige Panel wieder mit 'H' Taste (immer sichtbar machen)
     window.addEventListener('keydown', (e) => {

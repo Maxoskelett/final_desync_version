@@ -3,6 +3,10 @@ import { ADHSSimulation } from '../adhs_simulation.js';
 import { installInput } from './input.js';
 
 function ensureInstance() {
+  try {
+    window.adhsInitError = null;
+  } catch (e) {}
+
   // Globale Klasse für Debug/Legacy
   try {
     if (typeof window.ADHSSimulation === 'undefined') {
@@ -10,12 +14,22 @@ function ensureInstance() {
     }
   } catch (e) {}
 
-  if (typeof window.adhs === 'undefined') {
-    window.adhs = new ADHSSimulation();
+  try {
+    if (typeof window.adhs === 'undefined') {
+      window.adhs = new ADHSSimulation();
+    }
+  } catch (e) {
+    try { window.adhsInitError = e; } catch (err) {}
+    console.error('[ADHS] Failed to initialize simulation instance', e);
+    return;
   }
 
   // Input + ESP32
-  installInput(window.adhs);
+  try {
+    installInput(window.adhs);
+  } catch (e) {
+    console.error('[ADHS] Failed to install input handlers', e);
+  }
 
   // Simulation startet mit Aus
   try {
